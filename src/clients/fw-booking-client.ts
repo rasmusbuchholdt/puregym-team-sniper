@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 
-import { ITeamsResponse, Team } from '../models/teams-response';
+import { IActivitiesResponse } from '../models/activities-reponse';
+import { ITeam, ITeamsResponse } from '../models/teams-response';
 import { IUnbookingResponse } from '../models/unbooking-response';
 
 export class FitnessWorldBookingClient {
@@ -13,7 +14,7 @@ export class FitnessWorldBookingClient {
     });
   }
 
-  bookTeam = async (team: Team, cookie: string) => {
+  bookTeam = async (team: ITeam, cookie: string) => {
     return await this.client?.post<IBookingResponse>(
       "book_activity",
       `bookingId=${team.bookingId}&activityId=${team.activityId}&payment_type=free`,
@@ -51,5 +52,9 @@ export class FitnessWorldBookingClient {
     return this.client?.get<Array<ITeamsResponse>>("search_activities", {
       params,
     });
+  };
+
+  getActivities = () => {
+    return this.client?.get<IActivitiesResponse>("get_activities");
   };
 }

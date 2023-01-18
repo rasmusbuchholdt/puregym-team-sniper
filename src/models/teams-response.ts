@@ -1,9 +1,9 @@
-export interface Level {
+export interface ILevel {
   key: string;
   text: string;
 }
 
-export interface Button {
+export interface IButton {
   description: string;
   text: string;
   action: string;
@@ -11,7 +11,7 @@ export interface Button {
   popupDescription: string;
 }
 
-export interface Team {
+export interface ITeam {
   startTime: string;
   endTime: string;
   title: string;
@@ -25,11 +25,11 @@ export interface Team {
   centerUrl: string;
   duration: number;
   activityUrl: string;
-  level: Level;
-  button: Button;
+  level: ILevel;
+  button: IButton;
 }
 
 export interface ITeamsResponse {
   date: string;
-  items: Team[];
+  items: ITeam[];
 }
