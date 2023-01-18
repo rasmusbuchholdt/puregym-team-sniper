@@ -5,17 +5,17 @@ import { ITeam, ITeamsResponse } from '../models/teams-response';
 import { IUnbookingResponse } from '../models/unbooking-response';
 
 export class FitnessWorldBookingClient {
-  private client?: AxiosInstance;
+  private _client?: AxiosInstance;
 
   constructor() {
-    this.client = axios.create({
+    this._client = axios.create({
       baseURL: "https://www.fitnessworld.com/dk2/api/",
       timeout: 5000,
     });
   }
 
-  bookTeam = async (team: ITeam, cookie: string) => {
-    return await this.client?.post<IBookingResponse>(
+  async bookTeam(team: ITeam, cookie: string) {
+    return await this._client?.post<IBookingResponse>(
       "book_activity",
       `bookingId=${team.bookingId}&activityId=${team.activityId}&payment_type=free`,
       {
@@ -24,10 +24,10 @@ export class FitnessWorldBookingClient {
         },
       }
     );
-  };
+  }
 
-  unbookTeam = (participationId: string, cookie: string) => {
-    return this.client?.post<IUnbookingResponse>(
+  async unbookTeam(participationId: string, cookie: string) {
+    return await this._client?.post<IUnbookingResponse>(
       "unbook_activity",
       `participationId=${participationId}`,
       {
@@ -36,25 +36,25 @@ export class FitnessWorldBookingClient {
         },
       }
     );
-  };
+  }
 
-  getTeams = (
+  async getTeams(
     centerIds: number[],
     classIds: number[],
     from: Date,
     to: Date
-  ) => {
+  ) {
     const params = new URLSearchParams();
     centerIds.map((id) => params.append("centers[]", id.toString()));
     classIds.map((id) => params.append("classes[]", id.toString()));
     params.append("from", "2023-01-17");
     params.append("to", "2023-02-07");
-    return this.client?.get<Array<ITeamsResponse>>("search_activities", {
+    return await this._client?.get<Array<ITeamsResponse>>("search_activities", {
       params,
     });
-  };
+  }
 
-  getActivities = () => {
-    return this.client?.get<IActivitiesResponse>("get_activities");
-  };
+  async getActivities() {
+    return await this._client?.get<IActivitiesResponse>("get_activities");
+  }
 }

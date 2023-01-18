@@ -4,16 +4,16 @@ import qs from 'qs';
 import { getFakeHeaders, parseCookieHeaders } from './../helpers';
 
 export class FitnessWorldAuthenticationClient {
-  private client?: AxiosInstance;
+  private _client?: AxiosInstance;
 
   constructor() {
-    this.client = axios.create({
+    this._client = axios.create({
       timeout: 10000,
     });
   }
 
-  logIn = async (email: string, password: string) => {
-    return await this.client
+  async logIn(email: string, password: string) {
+    return await this._client
       ?.post<string>(
         "https://www.fitnessworld.com/dk2/?destination=/dk2/front",
         qs.stringify({
@@ -35,10 +35,10 @@ export class FitnessWorldAuthenticationClient {
           return parseCookieHeaders(error.response?.headers["set-cookie"]);
         }
       });
-  };
+  }
 
-  checkLoggedin = async (cookie: string) => {
-    const response = await this.client?.get(
+  async checkLoggedin(cookie: string) {
+    const response = await this._client?.get(
       "https://www.fitnessworld.com/dk2/front?check_logged_in=1",
       {
         headers: {
@@ -47,5 +47,5 @@ export class FitnessWorldAuthenticationClient {
       }
     );
     return response?.status === 200;
-  };
+  }
 }
