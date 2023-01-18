@@ -9,14 +9,14 @@ export class FitnessWorldBookingClient {
 
   constructor() {
     this._client = axios.create({
-      baseURL: "https://www.fitnessworld.com/dk2/api/",
+      baseURL: 'https://www.fitnessworld.com/dk2/api/',
       timeout: 5000,
     });
   }
 
   async bookTeam(team: ITeam, cookie: string) {
     return await this._client?.post<IBookingResponse>(
-      "book_activity",
+      'book_activity',
       `bookingId=${team.bookingId}&activityId=${team.activityId}&payment_type=free`,
       {
         headers: {
@@ -28,7 +28,7 @@ export class FitnessWorldBookingClient {
 
   async unbookTeam(participationId: string, cookie: string) {
     return await this._client?.post<IUnbookingResponse>(
-      "unbook_activity",
+      'unbook_activity',
       `participationId=${participationId}`,
       {
         headers: {
@@ -45,16 +45,16 @@ export class FitnessWorldBookingClient {
     to: Date
   ) {
     const params = new URLSearchParams();
-    centerIds.map((id) => params.append("centers[]", id.toString()));
-    classIds.map((id) => params.append("classes[]", id.toString()));
-    params.append("from", "2023-01-17");
-    params.append("to", "2023-02-07");
-    return await this._client?.get<Array<ITeamsResponse>>("search_activities", {
+    centerIds.map((id) => params.append('centers[]', id.toString()));
+    classIds.map((id) => params.append('classes[]', id.toString()));
+    params.append('from', '2023-01-17');
+    params.append('to', '2023-02-07');
+    return await this._client?.get<Array<ITeamsResponse>>('search_activities', {
       params,
     });
   }
 
   async getActivities() {
-    return await this._client?.get<IActivitiesResponse>("get_activities");
+    return await this._client?.get<IActivitiesResponse>('get_activities');
   }
 }

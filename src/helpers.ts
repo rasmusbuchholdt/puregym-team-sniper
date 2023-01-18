@@ -7,34 +7,34 @@ export const parseCookieHeaders = (cookieHeaders: string[]) => {
   return (
     cookieHeaders
       // Cookie that contains "expires="
-      .filter((e) => e.includes("expires="))[0]
+      .filter((e) => e.includes('expires='))[0]
       // We only want the first part (LONG_STRING and ANOTHER_LONG_STRING)
-      .split(";")[0]
+      .split(';')[0]
   );
   // Results in: LONG_STRING=ANOTHER_LONG_STRING
 };
 
 export const getFakeHeaders = () => {
   return {
-    "User-Agent":
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0",
+    'User-Agent':
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0',
     Accept:
-      "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.5",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Content-Type": "application/x-www-form-urlencoded",
-    Origin: "https://www.fitnessworld.com",
-    Connection: "keep-alive",
-    Referer: "https://www.fitnessworld.com/dk2/",
-    "Upgrade-Insecure-Requests": "1",
-    "Sec-Fetch-Dest": "document",
-    "Sec-Fetch-Mode": "navigate",
-    "Sec-Fetch-Site": "same-origin",
-    "Sec-Fetch-User": "?1",
-    DNT: "1",
-    "Sec-GPC": "1",
-    Pragma: "no-cache",
-    "Cache-Control": "no-cache",
-    TE: "trailers",
+      'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Content-Type': 'application/x-www-form-urlencoded',
+    Origin: 'https://www.fitnessworld.com',
+    Connection: 'keep-alive',
+    Referer: 'https://www.fitnessworld.com/dk2/',
+    'Upgrade-Insecure-Requests': '1',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'same-origin',
+    'Sec-Fetch-User': '?1',
+    DNT: '1',
+    'Sec-GPC': '1',
+    Pragma: 'no-cache',
+    'Cache-Control': 'no-cache',
+    TE: 'trailers',
   };
 };

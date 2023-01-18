@@ -15,9 +15,9 @@ export class FitnessWorldAuthenticationClient {
   async logIn(email: string, password: string) {
     return await this._client
       ?.post<string>(
-        "https://www.fitnessworld.com/dk2/?destination=/dk2/front",
+        'https://www.fitnessworld.com/dk2/?destination=/dk2/front',
         qs.stringify({
-          form_id: "user_login_form",
+          form_id: 'user_login_form',
           name: email,
           pass: password,
         }),
@@ -30,16 +30,16 @@ export class FitnessWorldAuthenticationClient {
       .catch((error: Error | AxiosError) => {
         if (
           axios.isAxiosError(error) &&
-          error.response?.headers["set-cookie"]
+          error.response?.headers['set-cookie']
         ) {
-          return parseCookieHeaders(error.response?.headers["set-cookie"]);
+          return parseCookieHeaders(error.response?.headers['set-cookie']);
         }
       });
   }
 
   async checkLoggedin(cookie: string) {
     const response = await this._client?.get(
-      "https://www.fitnessworld.com/dk2/front?check_logged_in=1",
+      'https://www.fitnessworld.com/dk2/front?check_logged_in=1',
       {
         headers: {
           Cookie: cookie,
