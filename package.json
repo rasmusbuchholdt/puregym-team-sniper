@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
+    "dump:centers": "node dist/dumps/dump-centers.js",
+    "dump:activities": "node dist/dumps/dump-activities.js",
     "postinstall": "tsc"
   },
   "repository": {

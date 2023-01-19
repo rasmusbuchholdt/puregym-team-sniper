@@ -22,6 +22,6 @@ export interface ICenter {
 }
 
 export interface IActivitiesResponse {
-  classes: IClass;
-  centers: ICenter;
+  classes: IClass[];
+  centers: ICenter[];
 }

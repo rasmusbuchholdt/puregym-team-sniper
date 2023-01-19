@@ -38,3 +38,9 @@ export const getFakeHeaders = () => {
     TE: 'trailers',
   };
 };
+
+export const dumpTitle = (title: string) => {
+  console.log('#############################');
+  console.log(title);
+  console.log('#############################');
+};
