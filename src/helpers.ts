@@ -1,4 +1,6 @@
-export const parseCookieHeaders = (cookieHeaders: string[]) => {
+import { IActivitiesResponse } from './models/activities-reponse';
+
+export function parseCookieHeaders(cookieHeaders: string[]) {
   // Input example:
   // [
   //   'fw_member=1; path=/',
@@ -12,9 +14,9 @@ export const parseCookieHeaders = (cookieHeaders: string[]) => {
       .split(';')[0]
   );
   // Results in: LONG_STRING=ANOTHER_LONG_STRING
-};
+}
 
-export const getFakeHeaders = () => {
+export function getFakeHeaders() {
   return {
     'User-Agent':
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0',
@@ -37,10 +39,63 @@ export const getFakeHeaders = () => {
     'Cache-Control': 'no-cache',
     TE: 'trailers',
   };
-};
+}
 
-export const dumpTitle = (title: string) => {
+export function dumpTitle(title: string) {
   console.log('#############################');
   console.log(title);
   console.log('#############################');
-};
+}
+
+export function getCentersFromIds(ids: string[], activitiesResponse: IActivitiesResponse) {
+  const allCenters = activitiesResponse.centers.flatMap((region) =>
+    region.options.map((center) => center)
+  );
+
+  const selectedCenters = allCenters
+    ?.filter((center) => ids.includes(center.value))
+    .map((center) => center);
+
+  if (selectedCenters === undefined || selectedCenters.length === 0) {
+    console.log('Did not find any centers matching', ids);
+    return;
+  }
+
+  dumpTitle('Target centers');
+  selectedCenters?.map((center) =>
+    console.log(`${center.value}: ${center.label}`)
+  );
+
+  return selectedCenters;
+}
+
+export function getActivitiesFromIds(ids: string[], activitiesResponse: IActivitiesResponse) {
+  const allActivities = activitiesResponse.classes.flatMap((category) =>
+    category.options.map((activity) => activity)
+  );
+
+  const selectedActivities = allActivities
+    ?.filter((activity) => ids.includes(activity.value))
+    .map((activity) => activity);
+
+  if (selectedActivities === undefined || selectedActivities.length === 0) {
+    console.log('Did not find any activities matching', ids);
+    return;
+  }
+
+  dumpTitle('Target activities');
+  selectedActivities?.map((activity) =>
+    console.log(`${activity.value}: ${activity.label}`)
+  );
+
+  return selectedActivities;
+}
+
+export const useGetDates = () => {
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
+  return {
+    today, tomorrow
+  }
+}
