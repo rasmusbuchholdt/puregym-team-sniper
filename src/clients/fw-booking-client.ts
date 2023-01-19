@@ -11,7 +11,6 @@ export class FitnessWorldBookingClient {
   constructor() {
     this._client = axios.create({
       baseURL: 'https://www.fitnessworld.com/dk2/api/',
-      timeout: 5000,
     });
   }
 
