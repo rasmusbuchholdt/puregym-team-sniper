@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 
+import { useGetDates } from '../helpers';
 import { IActivitiesResponse } from '../models/activities-reponse';
 import { ITeam, ITeamsResponse } from '../models/teams-response';
 import { IUnbookingResponse } from '../models/unbooking-response';
@@ -38,17 +39,20 @@ export class FitnessWorldBookingClient {
     );
   }
 
-  async getTeams(
-    centerIds: number[],
-    classIds: number[],
-    from: Date,
-    to: Date
-  ) {
+  async getTeams(centerIds?: number[], classIds?: number[], from?: Date, to?: Date) {
     const params = new URLSearchParams();
-    centerIds.map((id) => params.append('centers[]', id.toString()));
-    classIds.map((id) => params.append('classes[]', id.toString()));
-    params.append('from', '2023-01-17');
-    params.append('to', '2023-02-07');
+
+    if (centerIds) {
+      centerIds.map((id) => params.append('centers[]', id.toString()));
+    }
+    if (classIds) {
+      classIds.map((id) => params.append('classes[]', id.toString()));
+    }
+
+    const { today, tomorrow } = useGetDates();
+    params.append('from', from ? from.toISOString().split('T')[0] : today.toISOString().split('T')[0]);
+    params.append('to', to ? to.toISOString().split('T')[0] : tomorrow.toISOString().split('T')[0]);
+
     return await this._client?.get<Array<ITeamsResponse>>('search_activities', {
       params,
     });
