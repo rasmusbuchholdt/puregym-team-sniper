@@ -1,7 +1,7 @@
 import { FitnessWorldBookingClient } from '../clients/fw-booking-client';
 import { dumpTitle } from '../helpers';
 
-const dumpTeams = async () => {
+export const dumpTeams = async () => {
   const _fwBookingClient = new FitnessWorldBookingClient();
   const teamsResponse = await _fwBookingClient.getTeams();
 
@@ -12,4 +12,3 @@ const dumpTeams = async () => {
       .map((team) => console.log(`${team.location} - ${team.title} /w ${team.instructor} @ ${team.startTime}-${team.endTime}`));
   });
 };
-dumpTeams();
