@@ -39,15 +39,15 @@ export class FitnessWorldAuthenticationClient {
   }
 
   async checkLoggedin(cookie: string) {
-    // TODO: Fix this
-    const response = await this._client.get(
-      'https://www.fitnessworld.com/dk2/front?check_logged_in=1',
+    const response = await this._client.get<IUserSearchParamsResponse>(
+      'https://www.fitnessworld.com/dk2/api/get_user_search_params',
       {
         headers: {
           Cookie: cookie,
         },
       }
     );
-    return response?.status === 200;
+    // Authenticated users can view 21 days instead of 5
+    return response.data.search_days_allowed === 21;
   }
 }
