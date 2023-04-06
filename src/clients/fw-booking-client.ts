@@ -50,7 +50,6 @@ export class FitnessWorldBookingClient {
     if (centerIds) {
       centerIds.map((id) => params.append('centers[]', id.toString()));
     }
-    // TODO: Include instructor as param
 
     // If we don't pass any date range the API will just return the max amount we are allowed in response
     if (from) {
