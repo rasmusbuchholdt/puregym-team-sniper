@@ -2,6 +2,7 @@ import { Command, Option } from 'commander';
 import * as dotenv from 'dotenv';
 import { exit } from 'process';
 
+import { DiscordWebhookClient } from './clients/discord-webhook-client';
 import { FitnessWorldAuthenticationClient } from './clients/fw-auth-client';
 import { FitnessWorldBookingClient } from './clients/fw-booking-client';
 import { dumpActivities } from './dumps/dump-activities';
@@ -87,17 +88,21 @@ const run = async () => {
     // We need an actual valid auth cookie to book or unbook
     if (!authCookie) return;
 
+    const discordWebhookClient = new DiscordWebhookClient(process.env.DISCORD_WEBHOOK_URL);
+
+    await discordWebhookClient.sendTeamMessage('Succesfully booked', '5763719', targetTeams[0]);
+
     if (options.book) {
-      await handleBooking(targetTeams, fwBookingClient);
+      await handleBooking(targetTeams, fwBookingClient, discordWebhookClient);
     }
 
     if (options.unbook) {
-      await handleUnbooking(targetTeams, fwBookingClient);
+      await handleUnbooking(targetTeams, fwBookingClient, discordWebhookClient);
     }
   }
 };
 
-const handleBooking = async (teams: ITeamWithDate[], bookingClient: FitnessWorldBookingClient) => {
+const handleBooking = async (teams: ITeamWithDate[], bookingClient: FitnessWorldBookingClient, webhookClient: DiscordWebhookClient) => {
   const notBookedTeams = teams.filter(e => e.team.participationId === null);
   dumpTitle(`Found ${teams.length} teams - (${teams.length - notBookedTeams.length}/${teams.length}) already booked`);
   for (let i = 0; i < notBookedTeams.length; i++) {
@@ -105,13 +110,15 @@ const handleBooking = async (teams: ITeamWithDate[], bookingClient: FitnessWorld
     const result = await bookingClient.bookTeam(team.team);
     if (result.status === 'success') {
       console.log(`Succesfully booked ${team.team.bookingId}`);
+      await webhookClient.sendTeamMessage('Succesfully booked', '5763719', team);
     } else if (result.status === 'error') {
       console.log(`Could not book ${team.team.bookingId} (${result.description})`);
+      await webhookClient.sendTeamMessage('Could not book', '15548997', team, result.description);
     }
   }
 }
 
-const handleUnbooking = async (teams: ITeamWithDate[], bookingClient: FitnessWorldBookingClient) => {
+const handleUnbooking = async (teams: ITeamWithDate[], bookingClient: FitnessWorldBookingClient, webhookClient: DiscordWebhookClient) => {
   const bookedTeams = teams.filter(e => e.team.participationId !== null);
   dumpTitle(`Found ${bookedTeams.length} already booked teams`);
   for (let i = 0; i < bookedTeams.length; i++) {
@@ -119,8 +126,10 @@ const handleUnbooking = async (teams: ITeamWithDate[], bookingClient: FitnessWor
     const result = await bookingClient.unbookTeam(team.team.participationId!);
     if (result.status === 'success') {
       console.log(`Succesfully unbooked ${team.team.bookingId}`);
+      await webhookClient.sendTeamMessage('Succesfully unbooked', '5763719', team);
     } else if (result.status === 'error') {
       console.log(`Could not unbook ${team.team.bookingId}`);
+      await webhookClient.sendTeamMessage('Could not unbook', '15548997', team);
     }
   }
 }

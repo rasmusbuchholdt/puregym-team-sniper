@@ -56,3 +56,6 @@ If you happen to change your mind there is also a ``-u`` argument which unbooks 
 # This will show all teams in center 115 with activity id 34941 and then unbook them
 npm run cli -- -c 115 -a 34941 -s -u
 ```
+
+## Discord Webhooks
+The sniper also supports sending out messages through Discord webhooks, simply fill out the ``DISCORD_WEBHOOK_URL`` in the ``.env`` file and it will submit bookings and unbookings directly to your Discord webhook. You do not have to use this, if you remove the variable it will simply not use Discord webhooks.
