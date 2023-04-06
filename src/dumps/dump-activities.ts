@@ -1,9 +1,8 @@
 import { FitnessWorldBookingClient } from '../clients/fw-booking-client';
 import { dumpTitle } from '../helpers';
 
-export const dumpActivities = async () => {
-  const _fwBookingClient = new FitnessWorldBookingClient();
-  const activitiesResponse = await _fwBookingClient.getActivities();
+export const dumpActivities = async (bookingClient: FitnessWorldBookingClient) => {
+  const activitiesResponse = await bookingClient.getActivities();
 
   activitiesResponse.classes.map((category) => {
     dumpTitle(`Category: ${category.title}`);

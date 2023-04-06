@@ -45,17 +45,18 @@ const run = async () => {
     program.help();
   }
 
+  // Log in first
+  const authCookie = await logIn();
+
+  // Use the cookie whether its undefined or not, we can still look up teams 5 days ahead without authentication
+  const fwBookingClient = new FitnessWorldBookingClient(authCookie);
+
   if (options.dump) {
-    await handleDump(options);
+    await handleDump(options, fwBookingClient);
     exit(1);
   }
 
   if (options.centers || options.activities || options.teams) {
-    // Log in first
-    const authCookie = await logIn();
-
-    // Use the cookie whether its undefined or not, we can still look up teams 5 days ahead without authentication
-    const fwBookingClient = new FitnessWorldBookingClient(authCookie);
 
     const activitiesResponse = await fwBookingClient.getActivities();
     if (!activitiesResponse) {
@@ -124,17 +125,16 @@ const handleUnbooking = async (teams: ITeamWithDate[], bookingClient: FitnessWor
   }
 }
 
-const handleDump = async (options: ProgramOptions) => {
+const handleDump = async (options: ProgramOptions, bookingClient: FitnessWorldBookingClient) => {
   switch (options.dump) {
     case 'activities':
-      // TODO: Maybe pass cookie here so we get more than 5 days
-      await dumpActivities()
+      await dumpActivities(bookingClient);
       break;
     case 'centers':
-      await dumpCenters()
+      await dumpCenters(bookingClient);
       break;
     case 'teams':
-      await dumpTeams()
+      await dumpTeams(bookingClient);
       break;
     default:
       console.log(`${options.dump} is not a valid type`);
