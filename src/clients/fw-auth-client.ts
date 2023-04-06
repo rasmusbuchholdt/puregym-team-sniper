@@ -32,7 +32,6 @@ export class FitnessWorldAuthenticationClient {
           axios.isAxiosError(error) &&
           error.response?.headers['set-cookie']
         ) {
-          // TODO: Handle wrong login
           return parseCookieHeaders(error.response?.headers['set-cookie']);
         }
       });
