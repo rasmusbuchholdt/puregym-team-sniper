@@ -22,6 +22,10 @@ const run = async () => {
   program.parse();
   const options = program.opts();
 
+  if (Object.values(options).length === 0) {
+    program.help();
+  }
+
   if (options.dump === 'activities') {
     dumpActivities()
   } else if (options.dump === 'centers') {
