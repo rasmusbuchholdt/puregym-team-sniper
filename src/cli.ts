@@ -10,7 +10,7 @@ import { dumpTeams } from './dumps/dump-teams';
 import { dumpTitle, getActivitiesFromIds, getCentersFromIds, getTeamsFromIds, getTeamsFromKeyword } from './helpers';
 import { ITeamWithDate } from './models/team-with-date';
 
-dotenv.config()
+dotenv.config();
 
 type ProgramOptions = {
   dump?: 'activities' | 'centers' | 'teams';
