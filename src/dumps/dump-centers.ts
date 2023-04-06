@@ -5,7 +5,7 @@ export const dumpCenters = async () => {
   const _fwBookingClient = new FitnessWorldBookingClient();
   const activitiesResponse = await _fwBookingClient.getActivities();
   
-  activitiesResponse?.data.centers.map((region) => {
+  activitiesResponse.centers.map((region) => {
     dumpTitle(`Region: ${region.label}`);
     region.options
       .sort((a, b) => a.label.localeCompare(b.label))

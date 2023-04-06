@@ -1,5 +1,5 @@
 interface IBookingResponse {
-  status: string;
+  status: 'error' | 'success';
   participationId?: string;
   description?: string;
 }

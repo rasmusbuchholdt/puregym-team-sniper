@@ -4,7 +4,7 @@ import qs from 'qs';
 import { getFakeHeaders, parseCookieHeaders } from './../helpers';
 
 export class FitnessWorldAuthenticationClient {
-  private _client?: AxiosInstance;
+  private _client: AxiosInstance;
 
   constructor() {
     this._client = axios.create({
@@ -14,7 +14,7 @@ export class FitnessWorldAuthenticationClient {
 
   async logIn(email: string, password: string) {
     return await this._client
-      ?.post<string>(
+      .post<string>(
         'https://www.fitnessworld.com/dk2/?destination=/dk2/front',
         qs.stringify({
           form_id: 'user_login_form',
@@ -39,7 +39,8 @@ export class FitnessWorldAuthenticationClient {
   }
 
   async checkLoggedin(cookie: string) {
-    const response = await this._client?.get(
+    // TODO: Fix this
+    const response = await this._client.get(
       'https://www.fitnessworld.com/dk2/front?check_logged_in=1',
       {
         headers: {

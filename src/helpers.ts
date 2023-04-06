@@ -1,4 +1,5 @@
 import { IActivitiesResponse } from './models/activities-reponse';
+import { ITeam, ITeamsResponse } from './models/teams-response';
 
 export function parseCookieHeaders(cookieHeaders: string[]) {
   // Input example:
@@ -53,7 +54,7 @@ export function getCentersFromIds(ids: string[], activitiesResponse: IActivities
   );
 
   const selectedCenters = allCenters
-    ?.filter((center) => ids.includes(center.value))
+    .filter((center) => ids.includes(center.value))
     .map((center) => center);
 
   if (selectedCenters === undefined || selectedCenters.length === 0) {
@@ -62,7 +63,7 @@ export function getCentersFromIds(ids: string[], activitiesResponse: IActivities
   }
 
   dumpTitle('Target centers');
-  selectedCenters?.map((center) =>
+  selectedCenters.map((center) =>
     console.log(`${center.value}: ${center.label}`)
   );
 
@@ -75,7 +76,7 @@ export function getActivitiesFromIds(ids: string[], activitiesResponse: IActivit
   );
 
   const selectedActivities = allActivities
-    ?.filter((activity) => ids.includes(activity.value))
+    .filter((activity) => ids.includes(activity.value))
     .map((activity) => activity);
 
   if (selectedActivities === undefined || selectedActivities.length === 0) {
@@ -84,18 +85,59 @@ export function getActivitiesFromIds(ids: string[], activitiesResponse: IActivit
   }
 
   dumpTitle('Target activities');
-  selectedActivities?.map((activity) =>
+  selectedActivities.map((activity) =>
     console.log(`${activity.value}: ${activity.label}`)
   );
 
   return selectedActivities;
 }
 
-export const useGetDates = () => {
-  const today = new Date();
-  const tomorrow = new Date();
-  tomorrow.setDate(today.getDate() + 1);
-  return {
-    today, tomorrow
+export function getTeamsFromIds(ids: string[], teamsResponse: ITeamsResponse[]) {
+  const allTeams = teamsResponse.flatMap((date) =>
+    date.items.map((team) => team)
+  );
+
+  const selectedTeams = allTeams
+    .filter((activity) => ids.includes(activity.bookingId))
+    .map((activity) => activity);
+
+  if (selectedTeams === undefined || selectedTeams.length === 0) {
+    console.log('Did not find any teams matching', ids);
+    return;
   }
+
+  dumpTitle('Target teams');
+  selectedTeams.map((team) =>
+    printTeam(team)
+  );
+
+  return selectedTeams;
+}
+
+export function getTeamsFromKeyword(keyword: string, teamsResponse: ITeamsResponse[], showResult?: boolean) {
+  const allTeams = teamsResponse.flatMap((date) =>
+    date.items.map((team) => team)
+  );
+
+  const selectedTeams = allTeams
+    .filter((activity) => JSON.stringify(activity).includes(keyword))
+    .map((activity) => activity);
+
+  if (selectedTeams === undefined || selectedTeams.length === 0) {
+    console.log('Did not find any teams matching', keyword);
+    return [];
+  }
+
+  if (showResult) {
+    dumpTitle(`Target teams for booking ${keyword ? `matching keyword '${keyword}'` : ''}`);
+    selectedTeams.map((team) =>
+      printTeam(team)
+    );
+  }
+
+  return selectedTeams;
+}
+
+export const printTeam = (team: ITeam) => {
+  console.log(`${team.bookingId} - ${team.location} - ${team.title} /w ${team.instructor} @ ${team.startTime}-${team.endTime}`);
 }
