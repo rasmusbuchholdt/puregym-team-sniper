@@ -18,7 +18,7 @@ export interface ITeam {
   activityId: number;
   bookingId: string;
   payment_type: string;
-  participationId: string;
+  participationId: string | null;
   instructor: string;
   location: string;
   centerName: string;

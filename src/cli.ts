@@ -8,6 +8,7 @@ import { dumpActivities } from './dumps/dump-activities';
 import { dumpCenters } from './dumps/dump-centers';
 import { dumpTeams } from './dumps/dump-teams';
 import { dumpTitle, getActivitiesFromIds, getCentersFromIds, getTeamsFromIds, getTeamsFromKeyword } from './helpers';
+import { ITeam } from './models/teams-response';
 
 dotenv.config()
 
@@ -17,8 +18,9 @@ type ProgramOptions = {
   centers?: string[];
   teams?: string[];
   show?: boolean;
-  book?: boolean;
   keywords?: string[];
+  book?: boolean;
+  unbook?: boolean;
 }
 
 const program = new Command();
@@ -31,8 +33,9 @@ program
   .addOption(new Option('-c, --centers <centers...>', 'specify center ids - get them with -d centers'))
   .addOption(new Option('-t, --teams <teams...>', 'specify team ids - get them with -d teams'))
   .addOption(new Option('-s, --show', 'show the target teams'))
+  .addOption(new Option('-k, --keywords <keywords...>', 'keywords that the team should include'))
   .addOption(new Option('-b, --book', 'book the teams flag'))
-  .addOption(new Option('-k, --keywords <keywords...>', 'keywords that the team should include'));
+  .addOption(new Option('-u, --unbook', 'unbook the teams flag'));
 
 const run = async () => {
   program.parse();
@@ -52,9 +55,9 @@ const run = async () => {
     const authCookie = await logIn();
 
     // Use the cookie whether its undefined or not, we can still look up teams 5 days ahead without authentication
-    const _fwBookingClient = new FitnessWorldBookingClient(authCookie);
+    const fwBookingClient = new FitnessWorldBookingClient(authCookie);
 
-    const activitiesResponse = await _fwBookingClient.getActivities();
+    const activitiesResponse = await fwBookingClient.getActivities();
     if (!activitiesResponse) {
       console.log('Could not reach Fitness World API');
       exit(1);
@@ -73,27 +76,53 @@ const run = async () => {
     }
 
     if (options.teams) {
-      const teamsResponse = await _fwBookingClient.getTeams();
+      const teamsResponse = await fwBookingClient.getTeams();
       getTeamsFromIds(options.teams, teamsResponse);
     }
 
-    const teamsResponse = await _fwBookingClient.getTeams(targetCenterIds, targetActivityIds);
+    const teamsResponse = await fwBookingClient.getTeams(targetCenterIds, targetActivityIds);
     const targetTeams = getTeamsFromKeyword(options.keywords ?? [], teamsResponse, options.show);
 
-    // We need an actual valid auth cookie to book
-    if (options.book && authCookie) {
-      dumpTitle(`Booking ${targetTeams.length} teams`);
-      targetTeams.forEach(async team => {
-        const result = await _fwBookingClient.bookTeam(team);
-        if (result.status === 'success') {
-          console.log(`Succesfully booked ${team.bookingId}`);
-        } else if (result.status === 'error') {
-          console.log(`Could not book ${team.bookingId} (${result.description})`);
-        }
-      });
+    // We need an actual valid auth cookie to book or unbook
+    if (!authCookie) return;
+
+    if (options.book) {
+      await handleBooking(targetTeams, fwBookingClient);
+    }
+
+    if (options.unbook) {
+      await handleUnbooking(targetTeams, fwBookingClient);
     }
   }
 };
+
+const handleBooking = async (teams: ITeam[], bookingClient: FitnessWorldBookingClient) => {
+  const notBookedTeams = teams.filter(e => e.participationId === null);
+  dumpTitle(`Found ${teams.length} teams - (${teams.length - notBookedTeams.length}/${teams.length}) already booked`);
+  for (let i = 0; i < notBookedTeams.length; i++) {
+    const team = notBookedTeams[i];
+    const result = await bookingClient.bookTeam(team);
+    if (result.status === 'success') {
+      console.log(`Succesfully booked ${team.bookingId}`);
+    } else if (result.status === 'error') {
+      console.log(`Could not book ${team.bookingId} (${result.description})`);
+    }
+  }
+}
+
+const handleUnbooking = async (teams: ITeam[], bookingClient: FitnessWorldBookingClient) => {
+  const bookedTeams = teams.filter(e => e.participationId !== null);
+  dumpTitle(`Found ${bookedTeams.length} already booked teams`);
+  for (let i = 0; i < bookedTeams.length; i++) {
+    const team = bookedTeams[i];
+    const result = await bookingClient.unbookTeam(team.participationId!);
+    if (result.status === 'success') {
+      console.log(`Succesfully unbooked ${team.bookingId}`);
+    } else if (result.status === 'error') {
+      console.log(`Could not unbook ${team.bookingId}`);
+    }
+  }
+}
 
 const handleDump = async (options: ProgramOptions) => {
   switch (options.dump) {
