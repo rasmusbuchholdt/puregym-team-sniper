@@ -2,9 +2,9 @@
   "name": "fw-team-sniper",
   "version": "1.0.0",
   "description": "Fitness World Team Sniper",
-  "main": "index.js",
+  "main": "node dist/cli.js",
   "scripts": {
-    "start": "node dist/index.js",
+    "start": "node dist/cli.js",
     "cli": "node dist/cli.js",
     "postinstall": "tsc"
   },
