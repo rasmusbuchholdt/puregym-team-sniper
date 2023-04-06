@@ -18,7 +18,7 @@ type ProgramOptions = {
   teams?: string[];
   show?: boolean;
   book?: boolean;
-  keyword?: string;
+  keywords?: string[];
 }
 
 const program = new Command();
@@ -32,7 +32,7 @@ program
   .addOption(new Option('-t, --teams <teams...>', 'specify team ids - get them with -d teams'))
   .addOption(new Option('-s, --show', 'show the target teams'))
   .addOption(new Option('-b, --book', 'book the teams flag'))
-  .addOption(new Option('-k, --keyword <keyword>', 'keyword for the team to include'));
+  .addOption(new Option('-k, --keywords <keywords...>', 'keywords that the team should include'));
 
 const run = async () => {
   program.parse();
@@ -78,7 +78,7 @@ const run = async () => {
     }
 
     const teamsResponse = await _fwBookingClient.getTeams(targetCenterIds, targetActivityIds);
-    const targetTeams = getTeamsFromKeyword(options.keyword ?? '', teamsResponse, options.show);
+    const targetTeams = getTeamsFromKeyword(options.keywords ?? [], teamsResponse, options.show);
 
     // We need an actual valid auth cookie to book
     if (options.book && authCookie) {

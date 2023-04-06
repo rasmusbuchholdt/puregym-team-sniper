@@ -114,22 +114,22 @@ export function getTeamsFromIds(ids: string[], teamsResponse: ITeamsResponse[]) 
   return selectedTeams;
 }
 
-export function getTeamsFromKeyword(keyword: string, teamsResponse: ITeamsResponse[], showResult?: boolean) {
+export function getTeamsFromKeyword(keywords: string[], teamsResponse: ITeamsResponse[], showResult?: boolean) {
   const allTeams = teamsResponse.flatMap((date) =>
     date.items.map((team) => team)
   );
 
   const selectedTeams = allTeams
-    .filter((activity) => JSON.stringify(activity).includes(keyword))
+    .filter((activity) => keywords.every(e => JSON.stringify(activity).includes(e)))
     .map((activity) => activity);
 
   if (selectedTeams === undefined || selectedTeams.length === 0) {
-    console.log('Did not find any teams matching', keyword);
+    console.log(`Did not find any teams matching conditions`);
     return [];
   }
 
   if (showResult) {
-    dumpTitle(`Target teams for booking ${keyword ? `matching keyword '${keyword}'` : ''}`);
+    dumpTitle(`Target teams for booking ${keywords ? `matching keywords '${keywords}'` : ''}`);
     selectedTeams.map((team) =>
       printTeam(team)
     );
