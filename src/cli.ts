@@ -8,7 +8,7 @@ import { dumpActivities } from './dumps/dump-activities';
 import { dumpCenters } from './dumps/dump-centers';
 import { dumpTeams } from './dumps/dump-teams';
 import { dumpTitle, getActivitiesFromIds, getCentersFromIds, getTeamsFromIds, getTeamsFromKeyword } from './helpers';
-import { ITeam } from './models/teams-response';
+import { ITeamWithDate } from './models/team-with-date';
 
 dotenv.config()
 
@@ -96,30 +96,30 @@ const run = async () => {
   }
 };
 
-const handleBooking = async (teams: ITeam[], bookingClient: FitnessWorldBookingClient) => {
-  const notBookedTeams = teams.filter(e => e.participationId === null);
+const handleBooking = async (teams: ITeamWithDate[], bookingClient: FitnessWorldBookingClient) => {
+  const notBookedTeams = teams.filter(e => e.team.participationId === null);
   dumpTitle(`Found ${teams.length} teams - (${teams.length - notBookedTeams.length}/${teams.length}) already booked`);
   for (let i = 0; i < notBookedTeams.length; i++) {
     const team = notBookedTeams[i];
-    const result = await bookingClient.bookTeam(team);
+    const result = await bookingClient.bookTeam(team.team);
     if (result.status === 'success') {
-      console.log(`Succesfully booked ${team.bookingId}`);
+      console.log(`Succesfully booked ${team.team.bookingId}`);
     } else if (result.status === 'error') {
-      console.log(`Could not book ${team.bookingId} (${result.description})`);
+      console.log(`Could not book ${team.team.bookingId} (${result.description})`);
     }
   }
 }
 
-const handleUnbooking = async (teams: ITeam[], bookingClient: FitnessWorldBookingClient) => {
-  const bookedTeams = teams.filter(e => e.participationId !== null);
+const handleUnbooking = async (teams: ITeamWithDate[], bookingClient: FitnessWorldBookingClient) => {
+  const bookedTeams = teams.filter(e => e.team.participationId !== null);
   dumpTitle(`Found ${bookedTeams.length} already booked teams`);
   for (let i = 0; i < bookedTeams.length; i++) {
     const team = bookedTeams[i];
-    const result = await bookingClient.unbookTeam(team.participationId!);
+    const result = await bookingClient.unbookTeam(team.team.participationId!);
     if (result.status === 'success') {
-      console.log(`Succesfully unbooked ${team.bookingId}`);
+      console.log(`Succesfully unbooked ${team.team.bookingId}`);
     } else if (result.status === 'error') {
-      console.log(`Could not unbook ${team.bookingId}`);
+      console.log(`Could not unbook ${team.team.bookingId}`);
     }
   }
 }

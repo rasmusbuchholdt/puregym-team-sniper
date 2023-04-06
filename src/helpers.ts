@@ -1,5 +1,6 @@
 import { IActivitiesResponse } from './models/activities-reponse';
-import { ITeam, ITeamsResponse } from './models/teams-response';
+import { ITeamWithDate } from './models/team-with-date';
+import { ITeamsResponse } from './models/teams-response';
 
 export function parseCookieHeaders(cookieHeaders: string[]) {
   // Input example:
@@ -94,12 +95,15 @@ export function getActivitiesFromIds(ids: string[], activitiesResponse: IActivit
 
 export function getTeamsFromIds(ids: string[], teamsResponse: ITeamsResponse[]) {
   const allTeams = teamsResponse.flatMap((date) =>
-    date.items.map((team) => team)
+    date.items.map((team) => <ITeamWithDate>{
+      date: date.date,
+      team
+    })
   );
 
   const selectedTeams = allTeams
-    .filter((activity) => ids.includes(activity.bookingId))
-    .map((activity) => activity);
+    .filter((team) => ids.includes(team.team.bookingId))
+    .map((team) => team);
 
   if (selectedTeams === undefined || selectedTeams.length === 0) {
     console.log('Did not find any teams matching', ids);
@@ -116,12 +120,15 @@ export function getTeamsFromIds(ids: string[], teamsResponse: ITeamsResponse[]) 
 
 export function getTeamsFromKeyword(keywords: string[], teamsResponse: ITeamsResponse[], showResult?: boolean) {
   const allTeams = teamsResponse.flatMap((date) =>
-    date.items.map((team) => team)
+    date.items.map((team) => <ITeamWithDate>{
+      date: date.date,
+      team
+    })
   );
 
   const selectedTeams = allTeams
-    .filter((activity) => keywords.every(e => JSON.stringify(activity).includes(e)))
-    .map((activity) => activity);
+    .filter((teams) => keywords.every(e => JSON.stringify(teams).includes(e)))
+    .map((teams) => teams);
 
   if (selectedTeams === undefined || selectedTeams.length === 0) {
     console.log(`Did not find any teams matching conditions`);
@@ -138,6 +145,6 @@ export function getTeamsFromKeyword(keywords: string[], teamsResponse: ITeamsRes
   return selectedTeams;
 }
 
-export const printTeam = (team: ITeam) => {
-  console.log(`${team.bookingId} - ${team.location} - ${team.title} /w ${team.instructor} @ ${team.startTime}-${team.endTime}`);
+export const printTeam = (team: ITeamWithDate) => {
+  console.log(`${team.team.bookingId} - ${team.team.location} - ${team.team.title} /w ${team.team.instructor} @ ${team.date} ${team.team.startTime}-${team.team.endTime}`);
 }
