@@ -90,8 +90,6 @@ const run = async () => {
 
     const discordWebhookClient = new DiscordWebhookClient(process.env.DISCORD_WEBHOOK_URL);
 
-    await discordWebhookClient.sendTeamMessage('Succesfully booked', '5763719', targetTeams[0]);
-
     if (options.book) {
       await handleBooking(targetTeams, fwBookingClient, discordWebhookClient);
     }
