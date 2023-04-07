@@ -32,6 +32,15 @@ export class DiscordWebhookClient {
 
   async sendTeamMessage(title: string, color: string, team: ITeamWithDate, message?: string) {
     if (!this._webhookUrl) return;
+
+    const formattedDate = team.date.replaceAll('-', '');
+    const formattedStartTime = team.team.startTime.replaceAll(':', '');
+    const formattedendTime = team.team.endTime.replaceAll(':', '');
+    const formattedLocation = `${team.team.location}, ${team.team.centerName}`;
+    const fullTimeString = `${formattedDate}T${formattedStartTime}00/${formattedDate}T${formattedendTime}00`;
+
+    const googleLink = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(team.team.title)}&details=${encodeURIComponent(team.team.instructor)}&location=${encodeURIComponent(formattedLocation)}&dates=${encodeURIComponent(fullTimeString)}`;
+
     await this._client.post(
       this._webhookUrl,
       {
@@ -46,7 +55,8 @@ export class DiscordWebhookClient {
               { name: 'Date', value: `${team.date} ${team.team.startTime}-${team.team.endTime}` },
               { name: 'Location', value: team.team.location },
               { name: 'Title', value: team.team.title },
-              { name: 'Instructor', value: team.team.instructor }
+              { name: 'Instructor', value: team.team.instructor },
+              { name: 'Google Calendar', value: `[Add to my calendar](${googleLink})` }
             ]
           }
         ]
