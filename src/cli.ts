@@ -107,7 +107,7 @@ const handleBooking = async (teams: ITeamWithDate[], bookingClient: FitnessWorld
   for (let i = 0; i < notBookedTeams.length; i++) {
     const team = notBookedTeams[i];
     if (!isWithinAllowedBookingDays(team, searchDaysAllowed)) {
-      console.log(`${team.team.bookingId} is not withih the ${searchDaysAllowed} booking ahead limit`);
+      console.log(`${team.team.bookingId} is not within the ${searchDaysAllowed} booking ahead limit`);
       continue;
     }
     const result = await bookingClient.bookTeam(team.team);
@@ -116,6 +116,7 @@ const handleBooking = async (teams: ITeamWithDate[], bookingClient: FitnessWorld
       await webhookClient.sendTeamMessage('Succesfully booked', '5763719', team);
     } else if (result.status === 'error') {
       console.log(`Could not book ${team.team.bookingId} (${result.description})`);
+      await webhookClient.sendTeamMessage('Could not book', '15548997', team, result.description);
     }
   }
 }
@@ -131,6 +132,7 @@ const handleUnbooking = async (teams: ITeamWithDate[], bookingClient: FitnessWor
       await webhookClient.sendTeamMessage('Succesfully unbooked', '5763719', team);
     } else if (result.status === 'error') {
       console.log(`Could not unbook ${team.team.bookingId}`);
+      await webhookClient.sendTeamMessage('Could not unbook', '15548997', team);
     }
   }
 }
