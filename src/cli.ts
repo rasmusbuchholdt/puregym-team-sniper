@@ -111,7 +111,6 @@ const handleBooking = async (teams: ITeamWithDate[], bookingClient: FitnessWorld
       await webhookClient.sendTeamMessage('Succesfully booked', '5763719', team);
     } else if (result.status === 'error') {
       console.log(`Could not book ${team.team.bookingId} (${result.description})`);
-      await webhookClient.sendTeamMessage('Could not book', '15548997', team, result.description);
     }
   }
 }
@@ -127,7 +126,6 @@ const handleUnbooking = async (teams: ITeamWithDate[], bookingClient: FitnessWor
       await webhookClient.sendTeamMessage('Succesfully unbooked', '5763719', team);
     } else if (result.status === 'error') {
       console.log(`Could not unbook ${team.team.bookingId}`);
-      await webhookClient.sendTeamMessage('Could not unbook', '15548997', team);
     }
   }
 }
