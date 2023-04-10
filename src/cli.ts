@@ -8,7 +8,7 @@ import { FitnessWorldBookingClient } from './clients/fw-booking-client';
 import { dumpActivities } from './dumps/dump-activities';
 import { dumpCenters } from './dumps/dump-centers';
 import { dumpTeams } from './dumps/dump-teams';
-import { dumpTitle, getActivitiesFromIds, getCentersFromIds, getTeamsFromIds, getTeamsFromKeyword } from './helpers';
+import { dumpTitle, getActivitiesFromIds, getCentersFromIds, getTeamsFromIds, getTeamsFromKeyword, isWithinAllowedBookingDays } from './helpers';
 import { ITeamWithDate } from './models/team-with-date';
 
 dotenv.config();
@@ -101,10 +101,15 @@ const run = async () => {
 };
 
 const handleBooking = async (teams: ITeamWithDate[], bookingClient: FitnessWorldBookingClient, webhookClient: DiscordWebhookClient) => {
+  const searchDaysAllowed = await bookingClient.getSearchDaysAllowed();
   const notBookedTeams = teams.filter(e => e.team.participationId === null);
   dumpTitle(`Found ${teams.length} teams - (${teams.length - notBookedTeams.length}/${teams.length}) already booked`);
   for (let i = 0; i < notBookedTeams.length; i++) {
     const team = notBookedTeams[i];
+    if (!isWithinAllowedBookingDays(team, searchDaysAllowed)) {
+      console.log(`${team.team.bookingId} is not withih the ${searchDaysAllowed} booking ahead limit`);
+      continue;
+    }
     const result = await bookingClient.bookTeam(team.team);
     if (result.status === 'success') {
       console.log(`Succesfully booked ${team.team.bookingId}`);

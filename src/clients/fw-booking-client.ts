@@ -15,8 +15,20 @@ export class FitnessWorldBookingClient {
     this._cookie = cookie;
   }
 
+  async getSearchDaysAllowed() {
+    const response = await this._client.get<IUserSearchParamsResponse>(
+      'https://www.fitnessworld.com/dk2/api/get_user_search_params',
+      {
+        headers: {
+          Cookie: this._cookie,
+        },
+      }
+    );
+    return response.data.search_days_allowed;
+  }
+
   async bookTeam(team: ITeam) {
-    const result = await this._client.post<IBookingResponse>(
+    const response = await this._client.post<IBookingResponse>(
       'book_activity',
       `bookingId=${team.bookingId}&activityId=${team.activityId}&payment_type=free`,
       {
@@ -25,11 +37,11 @@ export class FitnessWorldBookingClient {
         },
       }
     );
-    return result.data;
+    return response.data;
   }
 
   async unbookTeam(participationId: string) {
-    const result = await this._client.post<IUnbookingResponse>(
+    const response = await this._client.post<IUnbookingResponse>(
       'unbook_activity',
       `participationId=${participationId}`,
       {
@@ -38,7 +50,7 @@ export class FitnessWorldBookingClient {
         },
       }
     );
-    return result.data;
+    return response.data;
   }
 
   async getTeams(centerIds?: number[], activityIds?: number[], from?: Date, to?: Date) {
@@ -59,21 +71,21 @@ export class FitnessWorldBookingClient {
       params.append('to', to.toISOString().split('T')[0]);
     }
 
-    const result = await this._client.get<Array<ITeamsResponse>>('search_activities', {
+    const response = await this._client.get<Array<ITeamsResponse>>('search_activities', {
       params,
       headers: {
         Cookie: this._cookie,
       }
     });
-    return result.data;
+    return response.data;
   }
 
   async getActivities() {
-    const result = await this._client.get<IActivitiesResponse>('get_activities', {
+    const response = await this._client.get<IActivitiesResponse>('get_activities', {
       headers: {
         Cookie: this._cookie,
       }
     });
-    return result.data;
+    return response.data;
   }
 }

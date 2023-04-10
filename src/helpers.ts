@@ -1,3 +1,5 @@
+import { differenceInMinutes } from 'date-fns';
+
 import { IActivitiesResponse } from './models/activities-reponse';
 import { ITeamWithDate } from './models/team-with-date';
 import { ITeamsResponse } from './models/teams-response';
@@ -147,4 +149,10 @@ export function getTeamsFromKeyword(keywords: string[], teamsResponse: ITeamsRes
 
 export const printTeam = (team: ITeamWithDate) => {
   console.log(`${team.team.bookingId} - ${team.team.location} - ${team.team.title} /w ${team.team.instructor} @ ${team.date} ${team.team.startTime}-${team.team.endTime}`);
+}
+
+export const isWithinAllowedBookingDays = (team: ITeamWithDate, daysAllowed: number) => {
+  const daysAllowedInMin = daysAllowed * 1440;
+  const diffInMin = differenceInMinutes(new Date(`${team.date} ${team.team.startTime}`), new Date());
+  return diffInMin < daysAllowedInMin;
 }
