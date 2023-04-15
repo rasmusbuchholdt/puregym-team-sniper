@@ -1,5 +1,5 @@
 // https://www.fitnessworld.com/dk/api/v1.0.0/user/me
-export interface UserResponse {
+export interface UserMeResponse {
   data: Data;
   status: string;
   description: string;

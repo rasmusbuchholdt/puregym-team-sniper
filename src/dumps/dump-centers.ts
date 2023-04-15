@@ -1,4 +1,4 @@
-import { FitnessWorldBookingClient } from '../clients/fw-booking-client';
+import { FitnessWorldBookingClient } from '../clients/fw-api-client';
 import { dumpTitle } from '../helpers';
 
 export const dumpCenters = async (bookingClient: FitnessWorldBookingClient) => {

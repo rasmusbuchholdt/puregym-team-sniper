@@ -1,5 +1,4 @@
-// https://www.fitnessworld.com/dk/api/v1.0.0/bookings
-interface BookingsResponse {
+export interface BookingsResponse {
   data: Datum[];
   status: string;
   banner: Banner;

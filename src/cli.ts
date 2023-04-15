@@ -3,12 +3,22 @@ import * as dotenv from 'dotenv';
 import { exit } from 'process';
 
 import { DiscordWebhookClient } from './clients/discord-webhook-client';
+import {
+  FitnessWorldBookingClient,
+  FitnessWorldMobileBookingClient,
+} from './clients/fw-api-client';
 import { FitnessWorldAuthenticationClient } from './clients/fw-auth-client';
-import { FitnessWorldBookingClient } from './clients/fw-booking-client';
 import { dumpActivities } from './dumps/dump-activities';
 import { dumpCenters } from './dumps/dump-centers';
 import { dumpTeams } from './dumps/dump-teams';
-import { dumpTitle, getActivitiesFromIds, getCentersFromIds, getTeamsFromIds, getTeamsFromKeyword, isWithinAllowedBookingDays } from './helpers';
+import {
+  dumpTitle,
+  getActivitiesFromIds,
+  getCentersFromIds,
+  getTeamsFromIds,
+  getTeamsFromKeyword,
+  isWithinAllowedBookingDays,
+} from './helpers';
 import { ITeamWithDate } from './models/team-with-date';
 
 dotenv.config();
@@ -50,12 +60,12 @@ const run = async () => {
   const authCookie = await logIn();
 
   // Use the cookie whether its undefined or not, we can still look up teams 5 days ahead without authentication
-  const fwBookingClient = new FitnessWorldBookingClient(authCookie);
+  const fwBookingClient = new FitnessWorldMobileBookingClient(authCookie);
 
-  if (options.dump) {
-    await handleDump(options, fwBookingClient);
-    exit(1);
-  }
+  // if (options.dump) {
+  //   await handleDump(options, fwBookingClient);
+  //   exit(1);
+  // }
 
   if (options.centers || options.activities || options.teams) {
 
@@ -97,8 +107,22 @@ const run = async () => {
     if (options.unbook) {
       await handleUnbooking(targetTeams, fwBookingClient, discordWebhookClient);
     }
+
+
+    // await handleCheckIn(targetTeams, fwBookingClient, discordWebhookClient);
+
   }
 };
+
+const handleCheckIn = async (teams: ITeamWithDate[], bookingClient: FitnessWorldBookingClient, webhookClient: DiscordWebhookClient) => {
+  const bookedTeams = teams.filter(e => e.team.participationId !== null);
+  dumpTitle(`Found ${bookedTeams.length} already booked teams`);
+  for (let i = 0; i < bookedTeams.length; i++) {
+    const team = bookedTeams[i];
+    const result = await bookingClient.checkIn(team.team.participationId!);
+
+  }
+}
 
 const handleBooking = async (teams: ITeamWithDate[], bookingClient: FitnessWorldBookingClient, webhookClient: DiscordWebhookClient) => {
   const searchDaysAllowed = await bookingClient.getSearchDaysAllowed();
