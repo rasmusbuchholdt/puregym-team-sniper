@@ -1,8 +1,5 @@
-import { differenceInMinutes } from 'date-fns';
-
-import { IActivitiesResponse } from './models/activities-reponse';
-import { ITeamWithDate } from './models/team-with-date';
-import { ITeamsResponse } from './models/teams-response';
+import { ActivitiesResponse } from './models/activities/activities';
+import { CentersResponse } from './models/centers/centers';
 
 export function parseCookieHeaders(cookieHeaders: string[]) {
   // Input example:
@@ -51,14 +48,9 @@ export function dumpTitle(title: string) {
   console.log('#############################');
 }
 
-export function getCentersFromIds(ids: string[], activitiesResponse: IActivitiesResponse) {
-  const allCenters = activitiesResponse.centers.flatMap((region) =>
-    region.options.map((center) => center)
-  );
-
-  const selectedCenters = allCenters
-    .filter((center) => ids.includes(center.value))
-    .map((center) => center);
+export function getCentersFromIds(ids: string[], centersResponse: CentersResponse) {
+  const selectedCenters = centersResponse.data.list
+    .filter((center) => ids.includes(center.cid.toString()) && center.active === 1);
 
   if (selectedCenters === undefined || selectedCenters.length === 0) {
     console.log('Did not find any centers matching', ids);
@@ -67,19 +59,15 @@ export function getCentersFromIds(ids: string[], activitiesResponse: IActivities
 
   dumpTitle('Target centers');
   selectedCenters.map((center) =>
-    console.log(`${center.value}: ${center.label}`)
+    console.log(`${center.cid}: ${center.adress1} - ${center.adress2}, ${center.city}`)
   );
 
   return selectedCenters;
 }
 
-export function getActivitiesFromIds(ids: string[], activitiesResponse: IActivitiesResponse) {
-  const allActivities = activitiesResponse.classes.flatMap((category) =>
-    category.options.map((activity) => activity)
-  );
-
-  const selectedActivities = allActivities
-    .filter((activity) => ids.includes(activity.value))
+export function getActivitiesFromIds(ids: string[], activitiesResponse: ActivitiesResponse) {
+  const selectedActivities = activitiesResponse.activities
+    .filter((activity) => ids.includes(activity.activity_id.toString()) && activity.active === 1)
     .map((activity) => activity);
 
   if (selectedActivities === undefined || selectedActivities.length === 0) {
@@ -89,70 +77,70 @@ export function getActivitiesFromIds(ids: string[], activitiesResponse: IActivit
 
   dumpTitle('Target activities');
   selectedActivities.map((activity) =>
-    console.log(`${activity.value}: ${activity.label}`)
+    console.log(`${activity.activity_id}: ${activity.activity_name}`)
   );
 
   return selectedActivities;
 }
 
-export function getTeamsFromIds(ids: string[], teamsResponse: ITeamsResponse[]) {
-  const allTeams = teamsResponse.flatMap((date) =>
-    date.items.map((team) => <ITeamWithDate>{
-      date: date.date,
-      team
-    })
-  );
+// export function getTeamsFromIds(ids: string[], teamsResponse: ITeamsResponse[]) {
+//   const allTeams = teamsResponse.flatMap((date) =>
+//     date.items.map((team) => <ITeamWithDate>{
+//       date: date.date,
+//       team
+//     })
+//   );
 
-  const selectedTeams = allTeams
-    .filter((team) => ids.includes(team.team.bookingId))
-    .map((team) => team);
+//   const selectedTeams = allTeams
+//     .filter((team) => ids.includes(team.team.bookingId))
+//     .map((team) => team);
 
-  if (selectedTeams === undefined || selectedTeams.length === 0) {
-    console.log('Did not find any teams matching', ids);
-    return;
-  }
+//   if (selectedTeams === undefined || selectedTeams.length === 0) {
+//     console.log('Did not find any teams matching', ids);
+//     return;
+//   }
 
-  dumpTitle('Target teams');
-  selectedTeams.map((team) =>
-    printTeam(team)
-  );
+//   dumpTitle('Target teams');
+//   selectedTeams.map((team) =>
+//     printTeam(team)
+//   );
 
-  return selectedTeams;
-}
+//   return selectedTeams;
+// }
 
-export function getTeamsFromKeyword(keywords: string[], teamsResponse: ITeamsResponse[], showResult?: boolean) {
-  const allTeams = teamsResponse.flatMap((date) =>
-    date.items.map((team) => <ITeamWithDate>{
-      date: date.date,
-      team
-    })
-  );
+// export function getTeamsFromKeyword(keywords: string[], teamsResponse: ITeamsResponse[], showResult?: boolean) {
+//   const allTeams = teamsResponse.flatMap((date) =>
+//     date.items.map((team) => <ITeamWithDate>{
+//       date: date.date,
+//       team
+//     })
+//   );
 
-  const selectedTeams = allTeams
-    .filter((teams) => keywords.every(e => JSON.stringify(teams).includes(e)))
-    .map((teams) => teams);
+//   const selectedTeams = allTeams
+//     .filter((teams) => keywords.every(e => JSON.stringify(teams).includes(e)))
+//     .map((teams) => teams);
 
-  if (selectedTeams === undefined || selectedTeams.length === 0) {
-    console.log(`Did not find any teams matching conditions`);
-    return [];
-  }
+//   if (selectedTeams === undefined || selectedTeams.length === 0) {
+//     console.log(`Did not find any teams matching conditions`);
+//     return [];
+//   }
 
-  if (showResult) {
-    dumpTitle(`Target teams for booking ${keywords ? `matching keywords '${keywords}'` : ''}`);
-    selectedTeams.map((team) =>
-      printTeam(team)
-    );
-  }
+//   if (showResult) {
+//     dumpTitle(`Target teams for booking ${keywords ? `matching keywords '${keywords}'` : ''}`);
+//     selectedTeams.map((team) =>
+//       printTeam(team)
+//     );
+//   }
 
-  return selectedTeams;
-}
+//   return selectedTeams;
+// }
 
-export const printTeam = (team: ITeamWithDate) => {
-  console.log(`${team.team.bookingId} - ${team.team.location} - ${team.team.title} /w ${team.team.instructor} @ ${team.date} ${team.team.startTime}-${team.team.endTime}`);
-}
+// export const printTeam = (team: ITeamWithDate) => {
+//   console.log(`${team.team.bookingId} - ${team.team.location} - ${team.team.title} /w ${team.team.instructor} @ ${team.date} ${team.team.startTime}-${team.team.endTime}`);
+// }
 
-export const isWithinAllowedBookingDays = (team: ITeamWithDate, daysAllowed: number) => {
-  const daysAllowedInMin = daysAllowed * 1440;
-  const diffInMin = differenceInMinutes(new Date(`${team.date} ${team.team.startTime}`), new Date());
-  return diffInMin < daysAllowedInMin;
-}
+// export const isWithinAllowedBookingDays = (team: ITeamWithDate, daysAllowed: number) => {
+//   const daysAllowedInMin = daysAllowed * 1440;
+//   const diffInMin = differenceInMinutes(new Date(`${team.date} ${team.team.startTime}`), new Date());
+//   return diffInMin < daysAllowedInMin;
+// }
