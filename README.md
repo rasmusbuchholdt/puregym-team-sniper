@@ -32,7 +32,7 @@ npm run cli -- -t 153b181168
 npm run cli -- -c 115 -a 34941
 ```
 
-If you want to see what teams these queries would resolve to then add the ``-s`` argument to your command. You can also use the optional ``-k`` keywords argument include teams matching all the keywords passed:
+If you want to see what teams these queries would resolve to then add the ``-s`` argument to your command. You can also use the optional ``-k`` keywords argument include teams matching all the keywords passed. If you don't want to risk booking a team within x hours then you can use the ``-g`` grace period argument to skip teams within the amount of hours specified:
 
 ```
 # This will show all teams in center 115
@@ -41,6 +41,8 @@ npm run cli -- -c 115 -s
 npm run cli -- -c 115 -a 34941 -s
 # This will show all teams in center 115 with activity id 34941 containing Hans and 18:00
 npm run cli -- -c 115 -a 34941 -s -k Hans 18:00
+# This will show all teams in center 115 with activity id 34941 that are not within the next 72 hours
+npm run cli -- -c 115 -a 34941 -s -g 72
 ```
 
 The list printed out is all the teams that matches your query. If you actually want to commit to this list and book all the teams then you add the ``-b`` argument to your command like this:
