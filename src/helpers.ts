@@ -1,3 +1,4 @@
+import { InvalidArgumentError } from 'commander';
 import { differenceInMinutes } from 'date-fns';
 
 import { IActivitiesResponse } from './models/activities-reponse';
@@ -155,4 +156,12 @@ export const isWithinAllowedBookingDays = (team: ITeamWithDate, daysAllowed: num
   const daysAllowedInMin = daysAllowed * 1440;
   const diffInMin = differenceInMinutes(new Date(`${team.date} ${team.team.startTime}`), new Date());
   return diffInMin < daysAllowedInMin;
+}
+
+export const parseIntOption = (input: string) => {
+  const parsedValue = parseInt(input, 10);
+  if (isNaN(parsedValue)) {
+    throw new InvalidArgumentError('Not a number.');
+  }
+  return parsedValue;
 }

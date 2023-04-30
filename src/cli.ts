@@ -1,4 +1,5 @@
 import { Command, Option } from 'commander';
+import { add } from 'date-fns';
 import * as dotenv from 'dotenv';
 import { exit } from 'process';
 
@@ -8,7 +9,15 @@ import { FitnessWorldBookingClient } from './clients/fw-booking-client';
 import { dumpActivities } from './dumps/dump-activities';
 import { dumpCenters } from './dumps/dump-centers';
 import { dumpTeams } from './dumps/dump-teams';
-import { dumpTitle, getActivitiesFromIds, getCentersFromIds, getTeamsFromIds, getTeamsFromKeyword, isWithinAllowedBookingDays } from './helpers';
+import {
+  dumpTitle,
+  getActivitiesFromIds,
+  getCentersFromIds,
+  getTeamsFromIds,
+  getTeamsFromKeyword,
+  isWithinAllowedBookingDays,
+  parseIntOption,
+} from './helpers';
 import { ITeamWithDate } from './models/team-with-date';
 
 dotenv.config();
@@ -20,6 +29,7 @@ type ProgramOptions = {
   teams?: string[];
   show?: boolean;
   keywords?: string[];
+  grace?: number;
   book?: boolean;
   unbook?: boolean;
 }
@@ -35,6 +45,7 @@ program
   .addOption(new Option('-t, --teams <teams...>', 'specify team ids - get them with -d teams'))
   .addOption(new Option('-s, --show', 'show the target teams'))
   .addOption(new Option('-k, --keywords <keywords...>', 'keywords that the team should include'))
+  .addOption(new Option('-g, --grace <hours>', 'skip teams within grace period in hours').argParser(parseIntOption))
   .addOption(new Option('-b, --book', 'book the teams flag'))
   .addOption(new Option('-u, --unbook', 'unbook the teams flag'));
 
@@ -82,7 +93,14 @@ const run = async () => {
       getTeamsFromIds(options.teams, teamsResponse);
     }
 
-    const teamsResponse = await fwBookingClient.getTeams(targetCenterIds, targetActivityIds);
+    let fromDate: Date | undefined;
+    if (options.grace) {
+      fromDate = add(new Date(), {
+        hours: options.grace
+      })
+    }
+
+    const teamsResponse = await fwBookingClient.getTeams(targetCenterIds, targetActivityIds, fromDate);
     const targetTeams = getTeamsFromKeyword(options.keywords ?? [], teamsResponse, options.show);
 
     // We need an actual valid auth cookie to book or unbook
