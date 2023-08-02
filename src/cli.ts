@@ -4,20 +4,12 @@ import * as dotenv from 'dotenv';
 import { exit } from 'process';
 
 import { DiscordWebhookClient } from './clients/discord-webhook-client';
-import { FitnessWorldAuthenticationClient } from './clients/fw-auth-client';
-import { FitnessWorldBookingClient } from './clients/fw-booking-client';
+import { PureGymAuthenticationClient } from './clients/pg-auth-client';
+import { PureGymBookingClient } from './clients/pg-booking-client';
 import { dumpActivities } from './dumps/dump-activities';
 import { dumpCenters } from './dumps/dump-centers';
 import { dumpTeams } from './dumps/dump-teams';
-import {
-  dumpTitle,
-  getActivitiesFromIds,
-  getCentersFromIds,
-  getTeamsFromIds,
-  getTeamsFromKeyword,
-  isWithinAllowedBookingDays,
-  parseIntOption,
-} from './helpers';
+import { dumpTitle, getActivitiesFromIds, getCentersFromIds, getTeamsFromIds, getTeamsFromKeyword, isWithinAllowedBookingDays, parseIntOption } from './helpers';
 import { ITeamWithDate } from './models/team-with-date';
 
 dotenv.config();
@@ -37,7 +29,7 @@ type ProgramOptions = {
 const program = new Command();
 program
   .name('fw-team-sniper')
-  .description('CLI to snipe Fitness World teams')
+  .description('CLI to snipe PureGym teams')
   .addOption(new Option('-d, --dump <type>', 'dump type')
     .choices(['activities', 'centers', 'teams']))
   .addOption(new Option('-a, --activities <activities...>', 'specify activity ids - get them with -d activities'))
@@ -61,7 +53,7 @@ const run = async () => {
   const authCookie = await logIn();
 
   // Use the cookie whether its undefined or not, we can still look up teams 5 days ahead without authentication
-  const fwBookingClient = new FitnessWorldBookingClient(authCookie);
+  const fwBookingClient = new PureGymBookingClient(authCookie);
 
   if (options.dump) {
     await handleDump(options, fwBookingClient);
@@ -72,7 +64,7 @@ const run = async () => {
 
     const activitiesResponse = await fwBookingClient.getActivities();
     if (!activitiesResponse) {
-      console.log('Could not reach Fitness World API');
+      console.log('Could not reach PureGym API');
       exit(1);
     }
 
@@ -118,7 +110,7 @@ const run = async () => {
   }
 };
 
-const handleBooking = async (teams: ITeamWithDate[], bookingClient: FitnessWorldBookingClient, webhookClient: DiscordWebhookClient) => {
+const handleBooking = async (teams: ITeamWithDate[], bookingClient: PureGymBookingClient, webhookClient: DiscordWebhookClient) => {
   const searchDaysAllowed = await bookingClient.getSearchDaysAllowed();
   const notBookedTeams = teams.filter(e => e.team.participationId === null);
   dumpTitle(`Found ${teams.length} teams - (${teams.length - notBookedTeams.length}/${teams.length}) already booked`);
@@ -139,7 +131,7 @@ const handleBooking = async (teams: ITeamWithDate[], bookingClient: FitnessWorld
   }
 }
 
-const handleUnbooking = async (teams: ITeamWithDate[], bookingClient: FitnessWorldBookingClient, webhookClient: DiscordWebhookClient) => {
+const handleUnbooking = async (teams: ITeamWithDate[], bookingClient: PureGymBookingClient, webhookClient: DiscordWebhookClient) => {
   const bookedTeams = teams.filter(e => e.team.participationId !== null);
   dumpTitle(`Found ${bookedTeams.length} already booked teams`);
   for (let i = 0; i < bookedTeams.length; i++) {
@@ -155,7 +147,7 @@ const handleUnbooking = async (teams: ITeamWithDate[], bookingClient: FitnessWor
   }
 }
 
-const handleDump = async (options: ProgramOptions, bookingClient: FitnessWorldBookingClient) => {
+const handleDump = async (options: ProgramOptions, bookingClient: PureGymBookingClient) => {
   switch (options.dump) {
     case 'activities':
       await dumpActivities(bookingClient);
@@ -173,26 +165,26 @@ const handleDump = async (options: ProgramOptions, bookingClient: FitnessWorldBo
 }
 
 const logIn = async () => {
-  const _fwAuthClient = new FitnessWorldAuthenticationClient();
-  if (process.env.FITNESS_WORLD_EMAIL === undefined) {
+  const _fwAuthClient = new PureGymAuthenticationClient();
+  if (process.env.PUREGYM_EMAIL === undefined) {
     console.log("Missing email");
     return;
   }
-  if (process.env.FITNESS_WORLD_PASSWORD === undefined) {
+  if (process.env.PUREGYM_PASSWORD === undefined) {
     console.log("Missing password");
     return;
   }
   const cookie = (await _fwAuthClient.logIn(
-    process.env.FITNESS_WORLD_EMAIL,
-    process.env.FITNESS_WORLD_PASSWORD)
+    process.env.PUREGYM_EMAIL,
+    process.env.PUREGYM_PASSWORD)
   ) as string;
   if (cookie === undefined) return;
   const isValidCookie = await _fwAuthClient.checkLoggedin(cookie);
 
   if (isValidCookie) {
-    console.log(`Logged in as ${process.env.FITNESS_WORLD_EMAIL}`);
+    console.log(`Logged in as ${process.env.PUREGYM_EMAIL}`);
   } else {
-    console.log(`Could not log in as ${process.env.FITNESS_WORLD_EMAIL} - Booking is disabled and only able to query teams 5 days into the future`);
+    console.log(`Could not log in as ${process.env.PUREGYM_EMAIL} - Booking is disabled and only able to query teams 5 days into the future`);
   }
 
   return isValidCookie ? cookie : undefined;

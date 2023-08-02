@@ -11,8 +11,6 @@ export function parseCookieHeaders(cookieHeaders: string[]) {
   //   'fw_member=1; path=/',
   //   'LONG_STRING=ANOTHER_LONG_STRING; expires=Fri, 10-Feb-2023 01:10:28 GMT; Max-Age=2000000; path=/; domain=.www.fitnessworld.com; secure; HttpOnly'
   // ]
-  // console.log(cookieHeaders);
-  
   return (
     cookieHeaders
       // Cookie that contains "expires="
