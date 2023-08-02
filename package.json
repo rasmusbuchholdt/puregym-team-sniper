@@ -1,7 +1,7 @@
 {
-  "name": "fw-team-sniper",
+  "name": "puregym-team-sniper",
   "version": "1.0.0",
-  "description": "Fitness World Team Sniper",
+  "description": "PureGym Team Sniper",
   "main": "node dist/cli.js",
   "scripts": {
     "start": "node dist/cli.js",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RasmusBuchholdt/fw-team-sniper.git"
+    "url": "git+https://github.com/rasmusbuchholdt/puregym-team-sniper.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/RasmusBuchholdt/fw-team-sniper/issues"
+    "url": "https://github.com/rasmusbuchholdt/puregym-team-sniper/issues"
   },
-  "homepage": "https://github.com/RasmusBuchholdt/fw-team-sniper#readme",
+  "homepage": "https://github.com/rasmusbuchholdt/puregym-team-sniper#readme",
   "dependencies": {
     "axios": "^1.2.2",
     "commander": "^10.0.0",

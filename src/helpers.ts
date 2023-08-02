@@ -11,6 +11,8 @@ export function parseCookieHeaders(cookieHeaders: string[]) {
   //   'fw_member=1; path=/',
   //   'LONG_STRING=ANOTHER_LONG_STRING; expires=Fri, 10-Feb-2023 01:10:28 GMT; Max-Age=2000000; path=/; domain=.www.fitnessworld.com; secure; HttpOnly'
   // ]
+  // console.log(cookieHeaders);
+  
   return (
     cookieHeaders
       // Cookie that contains "expires="
@@ -30,9 +32,9 @@ export function getFakeHeaders() {
     'Accept-Language': 'en-US,en;q=0.5',
     'Accept-Encoding': 'gzip, deflate, br',
     'Content-Type': 'application/x-www-form-urlencoded',
-    Origin: 'https://www.fitnessworld.com',
+    Origin: 'https://www.puregym.dk',
     Connection: 'keep-alive',
-    Referer: 'https://www.fitnessworld.com/dk2/',
+    Referer: 'https://www.puregym.dk/dk2/',
     'Upgrade-Insecure-Requests': '1',
     'Sec-Fetch-Dest': 'document',
     'Sec-Fetch-Mode': 'navigate',

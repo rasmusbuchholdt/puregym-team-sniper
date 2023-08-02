@@ -16,7 +16,7 @@ export class DiscordWebhookClient {
     await this._client.post(
       this._webhookUrl,
       {
-        username: 'FW Sniper',
+        username: 'PureGym Sniper',
         embeds: [
           {
             title,
@@ -44,7 +44,7 @@ export class DiscordWebhookClient {
     await this._client.post(
       this._webhookUrl,
       {
-        username: 'FW Sniper',
+        username: 'PureGym Sniper',
         embeds: [
           {
             title,

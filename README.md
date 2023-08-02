@@ -1,9 +1,9 @@
-# Fitness World Team Sniper
-Are you tired of missing out on popular Fitness World Teams? Well fear no more! 
+# PureGym Team Sniper
+Are you tired of missing out on popular PureGym Teams? Well fear no more! 
 This tool can be run with specific filters to automatically book teams for you, so you always have a spot.
 
 ## Getting started
-The sniper only works as intended if it has access to your Fitness World account. Rename the ``.env.example`` to ``.env`` and fill in your login details, so it has access to your bookings.
+The sniper only works as intended if it has access to your PureGym account. Rename the ``.env.example`` to ``.env`` and fill in your login details, so it has access to your bookings.
 
 ## CLI Usage
 Run the following command to get started with using the CLI:
@@ -11,7 +11,7 @@ Run the following command to get started with using the CLI:
 This command should prompt you with the helper if you prefer that over this documentation.
 
 ### Dumping IDs
-The CLI is able to drop 3 kinds of data from the Fitness World API:
+The CLI is able to drop 3 kinds of data from the PureGym API:
 ```
 npm run cli -- -d activities
 npm run cli -- -d centers

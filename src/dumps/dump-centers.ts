@@ -1,7 +1,7 @@
-import { FitnessWorldBookingClient } from '../clients/fw-booking-client';
+import { PureGymBookingClient } from '../clients/pg-booking-client';
 import { dumpTitle } from '../helpers';
 
-export const dumpCenters = async (bookingClient: FitnessWorldBookingClient) => {
+export const dumpCenters = async (bookingClient: PureGymBookingClient) => {
   const activitiesResponse = await bookingClient.getActivities();
   
   activitiesResponse.centers.map((region) => {

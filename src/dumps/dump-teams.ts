@@ -1,7 +1,7 @@
-import { FitnessWorldBookingClient } from '../clients/fw-booking-client';
+import { PureGymBookingClient } from '../clients/pg-booking-client';
 import { dumpTitle, printTeam } from '../helpers';
 
-export const dumpTeams = async (bookingClient: FitnessWorldBookingClient) => {
+export const dumpTeams = async (bookingClient: PureGymBookingClient) => {
   const teamsResponse = await bookingClient.getTeams();
 
   teamsResponse.map((date) => {
