@@ -4,20 +4,20 @@ import { IActivitiesResponse } from '../models/activities-reponse';
 import { ITeam, ITeamsResponse } from '../models/teams-response';
 import { IUnbookingResponse } from '../models/unbooking-response';
 
-export class FitnessWorldBookingClient {
+export class PureGymBookingClient {
   private _client: AxiosInstance;
   private _cookie?: string;
 
   constructor(cookie?: string) {
     this._client = axios.create({
-      baseURL: 'https://www.fitnessworld.com/dk2/api/',
+      baseURL: 'https://www.puregym.dk/api/',
     });
     this._cookie = cookie;
   }
 
   async getSearchDaysAllowed() {
     const response = await this._client.get<IUserSearchParamsResponse>(
-      'https://www.fitnessworld.com/dk2/api/get_user_search_params',
+      'https://www.puregym.dk/api/get_user_search_params',
       {
         headers: {
           Cookie: this._cookie,

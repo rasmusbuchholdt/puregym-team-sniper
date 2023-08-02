@@ -1,9 +1,9 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import qs from 'qs';
 
-import { getFakeHeaders, parseCookieHeaders } from './../helpers';
+import { getFakeHeaders, parseCookieHeaders } from '../helpers';
 
-export class FitnessWorldAuthenticationClient {
+export class PureGymAuthenticationClient {
   private _client: AxiosInstance;
 
   constructor() {
@@ -15,7 +15,7 @@ export class FitnessWorldAuthenticationClient {
   async logIn(email: string, password: string) {
     return await this._client
       .post<string>(
-        'https://www.fitnessworld.com/dk2/?destination=/dk2/front',
+        'https://www.puregym.dk/?destination=/front',
         qs.stringify({
           form_id: 'user_login_form',
           name: email,
@@ -39,7 +39,7 @@ export class FitnessWorldAuthenticationClient {
 
   async checkLoggedin(cookie: string) {
     const response = await this._client.get<IUserSearchParamsResponse>(
-      'https://www.fitnessworld.com/dk2/api/get_user_search_params',
+      'https://www.puregym.dk/api/get_user_search_params',
       {
         headers: {
           Cookie: cookie,
