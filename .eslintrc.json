@@ -10,7 +10,7 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint", "no-relative-import-paths"],
+  "plugins": ["@typescript-eslint"],
   "rules": {
     "sort-imports": [
       "error",
@@ -20,10 +20,6 @@
         "ignoreMemberSort": false,
         "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
       }
-    ],
-    "no-relative-import-paths/no-relative-import-paths": [
-      "error",
-      { "allowSameFolder": true, "rootDir": "src" }
     ]
   }
 }

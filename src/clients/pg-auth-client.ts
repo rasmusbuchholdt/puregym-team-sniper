@@ -1,7 +1,8 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
-import { getFakeHeaders, parseCookieHeaders } from 'helpers';
-import { IUserSearchParamsResponse } from 'models/user-search-params-response';
+
 import qs from 'qs';
+import { getFakeHeaders, parseCookieHeaders } from '../helpers';
+import { IUserSearchParamsResponse } from '../models/user-search-params-response';
 
 export class PureGymAuthenticationClient {
   private _client: AxiosInstance;

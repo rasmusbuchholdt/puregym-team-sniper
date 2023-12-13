@@ -1,6 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-
-import { ITeamWithDate } from './../models/team-with-date';
+import { ITeamWithDate } from '../models/team-with-date';
 
 export class DiscordWebhookClient {
   private _client: AxiosInstance;

@@ -1,6 +1,5 @@
 import { InvalidArgumentError } from 'commander';
 import { differenceInMinutes } from 'date-fns';
-
 import { IActivitiesResponse } from './models/activities-reponse';
 import { ITeamWithDate } from './models/team-with-date';
 import { ITeamsResponse } from './models/teams-response';

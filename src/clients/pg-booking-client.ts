@@ -1,10 +1,9 @@
 import axios, { AxiosInstance } from 'axios';
-import { IActivitiesResponse } from 'models/activities-reponse';
-import { IBookingResponse } from 'models/booking-response';
-import { ITeam, ITeamsResponse } from 'models/teams-response';
-import { IUnbookingResponse } from 'models/unbooking-response';
-
-import { IUserSearchParamsResponse } from 'models/user-search-params-response';
+import { IActivitiesResponse } from '../models/activities-reponse';
+import { IBookingResponse } from '../models/booking-response';
+import { ITeam, ITeamsResponse } from '../models/teams-response';
+import { IUnbookingResponse } from '../models/unbooking-response';
+import { IUserSearchParamsResponse } from '../models/user-search-params-response';
 
 export class PureGymBookingClient {
   private _client: AxiosInstance;

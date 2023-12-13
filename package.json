@@ -4,13 +4,15 @@
   "description": "PureGym Team Sniper",
   "main": "node dist/cli.js",
   "scripts": {
+    "develop": "tsc -w",
     "start": "node dist/cli.js",
     "cli": "node dist/cli.js",
     "lint": "npm run lint:eslint && npm run lint:prettier",
     "lint:eslint": "eslint . --format stylish --max-warnings 0 .",
     "lint:prettier": "prettier --list-different .",
+    "eslint:fix": "eslint . --fix",
     "postinstall": "tsc",
-    "prettier": "prettier --write .",
+    "prettier:fix": "prettier --write .",
     "prepare": "husky install"
   },
   "repository": {
@@ -39,7 +41,6 @@
     "eslint-config-standard-with-typescript": "^42.0.0",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-n": "^16.4.0",
-    "eslint-plugin-no-relative-import-paths": "^1.5.3",
     "eslint-plugin-promise": "^6.1.1",
     "husky": "^8.0.0",
     "lint-staged": "^15.2.0",
