@@ -1,8 +1,8 @@
 import { Command, Option } from 'commander';
 import { add } from 'date-fns';
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
 import { exit } from 'process';
-
+import { LoggingClient } from './clients/logging-client';
 import { DiscordWebhookClient } from './clients/discord-webhook-client';
 import { PureGymAuthenticationClient } from './clients/pg-auth-client';
 import { PureGymBookingClient } from './clients/pg-booking-client';
@@ -19,7 +19,6 @@ import {
   parseIntOption,
 } from './helpers';
 import { ITeamWithDate } from './models/team-with-date';
-import { LoggingClient } from './clients/logging-client';
 
 dotenv.config();
 
