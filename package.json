@@ -6,7 +6,12 @@
   "scripts": {
     "start": "node dist/cli.js",
     "cli": "node dist/cli.js",
-    "postinstall": "tsc"
+    "lint": "npm run lint:eslint && npm run lint:prettier",
+    "lint:eslint": "eslint . --format stylish --max-warnings 0 .",
+    "lint:prettier": "prettier --list-different .",
+    "postinstall": "tsc",
+    "prettier": "prettier --write .",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -23,11 +28,28 @@
     "commander": "^10.0.0",
     "date-fns": "^2.29.3",
     "dotenv": "^16.0.3",
-    "qs": "^6.11.0",
-    "typescript": "^4.9.4"
+    "qs": "^6.11.0"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
-    "@types/qs": "^6.9.7"
+    "@types/qs": "^6.9.7",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-standard-with-typescript": "^42.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-n": "^16.4.0",
+    "eslint-plugin-no-relative-import-paths": "^1.5.3",
+    "eslint-plugin-promise": "^6.1.1",
+    "husky": "^8.0.0",
+    "lint-staged": "^15.2.0",
+    "prettier": "3.1.1",
+    "typescript": "^5.3.3"
+  },
+  "lint-staged": {
+    "*.{ts,json,md}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   }
 }

@@ -25,8 +25,7 @@ export function getFakeHeaders() {
   return {
     'User-Agent':
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0',
-    Accept:
-      'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+    Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
     'Accept-Language': 'en-US,en;q=0.5',
     'Accept-Encoding': 'gzip, deflate, br',
     'Content-Type': 'application/x-www-form-urlencoded',
@@ -67,9 +66,7 @@ export function getCentersFromIds(ids: string[], activitiesResponse: IActivities
   }
 
   dumpTitle('Target centers');
-  selectedCenters.map((center) =>
-    console.log(`${center.value}: ${center.label}`)
-  );
+  selectedCenters.map((center) => console.log(`${center.value}: ${center.label}`));
 
   return selectedCenters;
 }
@@ -89,19 +86,20 @@ export function getActivitiesFromIds(ids: string[], activitiesResponse: IActivit
   }
 
   dumpTitle('Target activities');
-  selectedActivities.map((activity) =>
-    console.log(`${activity.value}: ${activity.label}`)
-  );
+  selectedActivities.map((activity) => console.log(`${activity.value}: ${activity.label}`));
 
   return selectedActivities;
 }
 
 export function getTeamsFromIds(ids: string[], teamsResponse: ITeamsResponse[]) {
   const allTeams = teamsResponse.flatMap((date) =>
-    date.items.map((team) => <ITeamWithDate>{
-      date: date.date,
-      team
-    })
+    date.items.map(
+      (team) =>
+        <ITeamWithDate>{
+          date: date.date,
+          team,
+        }
+    )
   );
 
   const selectedTeams = allTeams
@@ -114,23 +112,28 @@ export function getTeamsFromIds(ids: string[], teamsResponse: ITeamsResponse[]) 
   }
 
   dumpTitle('Target teams');
-  selectedTeams.map((team) =>
-    printTeam(team)
-  );
+  selectedTeams.map((team) => printTeam(team));
 
   return selectedTeams;
 }
 
-export function getTeamsFromKeyword(keywords: string[], teamsResponse: ITeamsResponse[], showResult?: boolean) {
+export function getTeamsFromKeyword(
+  keywords: string[],
+  teamsResponse: ITeamsResponse[],
+  showResult?: boolean
+) {
   const allTeams = teamsResponse.flatMap((date) =>
-    date.items.map((team) => <ITeamWithDate>{
-      date: date.date,
-      team
-    })
+    date.items.map(
+      (team) =>
+        <ITeamWithDate>{
+          date: date.date,
+          team,
+        }
+    )
   );
 
   const selectedTeams = allTeams
-    .filter((teams) => keywords.every(e => JSON.stringify(teams).includes(e)))
+    .filter((teams) => keywords.every((e) => JSON.stringify(teams).includes(e)))
     .map((teams) => teams);
 
   if (selectedTeams === undefined || selectedTeams.length === 0) {
@@ -140,23 +143,26 @@ export function getTeamsFromKeyword(keywords: string[], teamsResponse: ITeamsRes
 
   if (showResult) {
     dumpTitle(`Target teams for booking ${keywords ? `matching keywords '${keywords}'` : ''}`);
-    selectedTeams.map((team) =>
-      printTeam(team)
-    );
+    selectedTeams.map((team) => printTeam(team));
   }
 
   return selectedTeams;
 }
 
 export const printTeam = (team: ITeamWithDate) => {
-  console.log(`${team.team.bookingId} - ${team.team.location} - ${team.team.title} /w ${team.team.instructor} @ ${team.date} ${team.team.startTime}-${team.team.endTime}`);
-}
+  console.log(
+    `${team.team.bookingId} - ${team.team.location} - ${team.team.title} /w ${team.team.instructor} @ ${team.date} ${team.team.startTime}-${team.team.endTime}`
+  );
+};
 
 export const isWithinAllowedBookingDays = (team: ITeamWithDate, daysAllowed: number) => {
   const daysAllowedInMin = daysAllowed * 1440;
-  const diffInMin = differenceInMinutes(new Date(`${team.date} ${team.team.startTime}`), new Date());
+  const diffInMin = differenceInMinutes(
+    new Date(`${team.date} ${team.team.startTime}`),
+    new Date()
+  );
   return diffInMin < daysAllowedInMin;
-}
+};
 
 export const parseIntOption = (input: string) => {
   const parsedValue = parseInt(input, 10);
@@ -164,4 +170,4 @@ export const parseIntOption = (input: string) => {
     throw new InvalidArgumentError('Not a number.');
   }
   return parsedValue;
-}
+};

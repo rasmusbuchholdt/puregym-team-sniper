@@ -1,8 +1,10 @@
 import axios, { AxiosInstance } from 'axios';
+import { IActivitiesResponse } from 'models/activities-reponse';
+import { IBookingResponse } from 'models/booking-response';
+import { ITeam, ITeamsResponse } from 'models/teams-response';
+import { IUnbookingResponse } from 'models/unbooking-response';
 
-import { IActivitiesResponse } from '../models/activities-reponse';
-import { ITeam, ITeamsResponse } from '../models/teams-response';
-import { IUnbookingResponse } from '../models/unbooking-response';
+import { IUserSearchParamsResponse } from 'models/user-search-params-response';
 
 export class PureGymBookingClient {
   private _client: AxiosInstance;
@@ -75,7 +77,7 @@ export class PureGymBookingClient {
       params,
       headers: {
         Cookie: this._cookie,
-      }
+      },
     });
     return response.data;
   }
@@ -84,7 +86,7 @@ export class PureGymBookingClient {
     const response = await this._client.get<IActivitiesResponse>('get_activities', {
       headers: {
         Cookie: this._cookie,
-      }
+      },
     });
     return response.data;
   }

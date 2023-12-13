@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
+import { getFakeHeaders, parseCookieHeaders } from 'helpers';
+import { IUserSearchParamsResponse } from 'models/user-search-params-response';
 import qs from 'qs';
-
-import { getFakeHeaders, parseCookieHeaders } from '../helpers';
 
 export class PureGymAuthenticationClient {
   private _client: AxiosInstance;
@@ -28,10 +28,7 @@ export class PureGymAuthenticationClient {
         }
       )
       .catch((error: Error | AxiosError) => {
-        if (
-          axios.isAxiosError(error) &&
-          error.response?.headers['set-cookie']
-        ) {
+        if (axios.isAxiosError(error) && error.response?.headers['set-cookie']) {
           return parseCookieHeaders(error.response?.headers['set-cookie']);
         }
       });
