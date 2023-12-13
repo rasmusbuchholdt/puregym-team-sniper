@@ -17,10 +17,7 @@ export class LoggingClient {
 
     // Add the new ID to the Set and add write it to the file
     existingIds.add(id);
-    await fsPromises.writeFile(
-      LOGGING_FILE_NAME,
-      Array.from(existingIds).join('\n')
-    );
+    await fsPromises.writeFile(LOGGING_FILE_NAME, Array.from(existingIds).join('\n'));
 
     return true;
   }

@@ -42,11 +42,7 @@ program
   .name('fw-team-sniper')
   .description('CLI to snipe PureGym teams')
   .addOption(
-    new Option('-d, --dump <type>', 'dump type').choices([
-      'activities',
-      'centers',
-      'teams',
-    ])
+    new Option('-d, --dump <type>', 'dump type').choices(['activities', 'centers', 'teams'])
   )
   .addOption(
     new Option(
@@ -55,29 +51,15 @@ program
     )
   )
   .addOption(
-    new Option(
-      '-c, --centers <centers...>',
-      'specify center ids - get them with -d centers'
-    )
+    new Option('-c, --centers <centers...>', 'specify center ids - get them with -d centers')
   )
-  .addOption(
-    new Option(
-      '-t, --teams <teams...>',
-      'specify team ids - get them with -d teams'
-    )
-  )
+  .addOption(new Option('-t, --teams <teams...>', 'specify team ids - get them with -d teams'))
   .addOption(new Option('-s, --show', 'show the target teams'))
+  .addOption(new Option('-k, --keywords <keywords...>', 'keywords that the team should include'))
   .addOption(
-    new Option(
-      '-k, --keywords <keywords...>',
-      'keywords that the team should include'
+    new Option('-g, --grace <hours>', 'skip teams within grace period in hours').argParser(
+      parseIntOption
     )
-  )
-  .addOption(
-    new Option(
-      '-g, --grace <hours>',
-      'skip teams within grace period in hours'
-    ).argParser(parseIntOption)
   )
   .addOption(new Option('-b, --book', 'book the teams flag'))
   .addOption(new Option('-u, --unbook', 'unbook the teams flag'));
@@ -139,18 +121,12 @@ const run = async () => {
       targetActivityIds,
       fromDate
     );
-    const targetTeams = getTeamsFromKeyword(
-      options.keywords ?? [],
-      teamsResponse,
-      options.show
-    );
+    const targetTeams = getTeamsFromKeyword(options.keywords ?? [], teamsResponse, options.show);
 
     // We need an actual valid auth cookie to book or unbook
     if (!authCookie) return;
 
-    const discordWebhookClient = new DiscordWebhookClient(
-      process.env.DISCORD_WEBHOOK_URL
-    );
+    const discordWebhookClient = new DiscordWebhookClient(process.env.DISCORD_WEBHOOK_URL);
 
     if (options.book) {
       await handleBooking(targetTeams, fwBookingClient, discordWebhookClient);
@@ -183,34 +159,19 @@ const handleBooking = async (
       continue;
     }
 
-    const firstTimeBooked = await loggingClient.isFirstTimeBooked(
-      team.team.bookingId
-    );
+    const firstTimeBooked = await loggingClient.isFirstTimeBooked(team.team.bookingId);
     if (!firstTimeBooked) {
-      console.log(
-        `Skipping ${team.team.bookingId} - already booked in the past`
-      );
+      console.log(`Skipping ${team.team.bookingId} - already booked in the past`);
       continue;
     }
 
     const result = await bookingClient.bookTeam(team.team);
     if (result.status === 'success') {
       console.log(`Succesfully booked ${team.team.bookingId}`);
-      await webhookClient.sendTeamMessage(
-        'Succesfully booked',
-        '5763719',
-        team
-      );
+      await webhookClient.sendTeamMessage('Succesfully booked', '5763719', team);
     } else if (result.status === 'error') {
-      console.log(
-        `Could not book ${team.team.bookingId} (${result.description})`
-      );
-      await webhookClient.sendTeamMessage(
-        'Could not book',
-        '15548997',
-        team,
-        result.description
-      );
+      console.log(`Could not book ${team.team.bookingId} (${result.description})`);
+      await webhookClient.sendTeamMessage('Could not book', '15548997', team, result.description);
     }
   }
 };
@@ -227,11 +188,7 @@ const handleUnbooking = async (
     const result = await bookingClient.unbookTeam(team.team.participationId!);
     if (result.status === 'success') {
       console.log(`Succesfully unbooked ${team.team.bookingId}`);
-      await webhookClient.sendTeamMessage(
-        'Succesfully unbooked',
-        '5763719',
-        team
-      );
+      await webhookClient.sendTeamMessage('Succesfully unbooked', '5763719', team);
     } else if (result.status === 'error') {
       console.log(`Could not unbook ${team.team.bookingId}`);
       await webhookClient.sendTeamMessage('Could not unbook', '15548997', team);
@@ -239,10 +196,7 @@ const handleUnbooking = async (
   }
 };
 
-const handleDump = async (
-  options: ProgramOptions,
-  bookingClient: PureGymBookingClient
-) => {
+const handleDump = async (options: ProgramOptions, bookingClient: PureGymBookingClient) => {
   switch (options.dump) {
     case 'activities':
       await dumpActivities(bookingClient);

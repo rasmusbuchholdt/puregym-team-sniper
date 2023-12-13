@@ -26,12 +26,7 @@ export class DiscordWebhookClient {
     });
   }
 
-  async sendTeamMessage(
-    title: string,
-    color: string,
-    team: ITeamWithDate,
-    message?: string
-  ) {
+  async sendTeamMessage(title: string, color: string, team: ITeamWithDate, message?: string) {
     if (!this._webhookUrl) return;
 
     const formattedDate = team.date.replaceAll('-', '');
@@ -42,9 +37,7 @@ export class DiscordWebhookClient {
 
     const googleLink = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
       team.team.title
-    )}&details=${encodeURIComponent(
-      team.team.instructor
-    )}&location=${encodeURIComponent(
+    )}&details=${encodeURIComponent(team.team.instructor)}&location=${encodeURIComponent(
       formattedLocation
     )}&dates=${encodeURIComponent(fullTimeString)}`;
 

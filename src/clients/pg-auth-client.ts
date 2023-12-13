@@ -28,10 +28,7 @@ export class PureGymAuthenticationClient {
         }
       )
       .catch((error: Error | AxiosError) => {
-        if (
-          axios.isAxiosError(error) &&
-          error.response?.headers['set-cookie']
-        ) {
+        if (axios.isAxiosError(error) && error.response?.headers['set-cookie']) {
           return parseCookieHeaders(error.response?.headers['set-cookie']);
         }
       });

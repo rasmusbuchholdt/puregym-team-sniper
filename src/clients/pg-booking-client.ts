@@ -55,12 +55,7 @@ export class PureGymBookingClient {
     return response.data;
   }
 
-  async getTeams(
-    centerIds?: number[],
-    activityIds?: number[],
-    from?: Date,
-    to?: Date
-  ) {
+  async getTeams(centerIds?: number[], activityIds?: number[], from?: Date, to?: Date) {
     const params = new URLSearchParams();
 
     if (activityIds) {
@@ -78,27 +73,21 @@ export class PureGymBookingClient {
       params.append('to', to.toISOString().split('T')[0]);
     }
 
-    const response = await this._client.get<Array<ITeamsResponse>>(
-      'search_activities',
-      {
-        params,
-        headers: {
-          Cookie: this._cookie,
-        },
-      }
-    );
+    const response = await this._client.get<Array<ITeamsResponse>>('search_activities', {
+      params,
+      headers: {
+        Cookie: this._cookie,
+      },
+    });
     return response.data;
   }
 
   async getActivities() {
-    const response = await this._client.get<IActivitiesResponse>(
-      'get_activities',
-      {
-        headers: {
-          Cookie: this._cookie,
-        },
-      }
-    );
+    const response = await this._client.get<IActivitiesResponse>('get_activities', {
+      headers: {
+        Cookie: this._cookie,
+      },
+    });
     return response.data;
   }
 }
