@@ -3,7 +3,6 @@ import { promises as fsPromises } from 'fs';
 const LOGGING_FILE_NAME = 'bookings.log';
 
 export class LoggingClient {
-
   constructor() {
     // Create the logging file if it does not exist
     fsPromises.open(LOGGING_FILE_NAME, 'a').catch();
@@ -16,9 +15,12 @@ export class LoggingClient {
       return false;
     }
 
-    // Add the new ID to the Set and add write it to the file    
+    // Add the new ID to the Set and add write it to the file
     existingIds.add(id);
-    await fsPromises.writeFile(LOGGING_FILE_NAME, Array.from(existingIds).join('\n'));
+    await fsPromises.writeFile(
+      LOGGING_FILE_NAME,
+      Array.from(existingIds).join('\n')
+    );
 
     return true;
   }
@@ -29,4 +31,3 @@ export class LoggingClient {
     return new Set(content.trim().split('\n'));
   }
 }
-

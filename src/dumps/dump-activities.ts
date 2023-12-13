@@ -1,5 +1,5 @@
-import { PureGymBookingClient } from '../clients/pg-booking-client';
-import { dumpTitle } from '../helpers';
+import { PureGymBookingClient } from 'clients/pg-booking-client';
+import { dumpTitle } from 'helpers';
 
 export const dumpActivities = async (bookingClient: PureGymBookingClient) => {
   const activitiesResponse = await bookingClient.getActivities();

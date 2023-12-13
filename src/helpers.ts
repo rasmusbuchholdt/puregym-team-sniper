@@ -52,7 +52,10 @@ export function dumpTitle(title: string) {
   console.log('#############################');
 }
 
-export function getCentersFromIds(ids: string[], activitiesResponse: IActivitiesResponse) {
+export function getCentersFromIds(
+  ids: string[],
+  activitiesResponse: IActivitiesResponse
+) {
   const allCenters = activitiesResponse.centers.flatMap((region) =>
     region.options.map((center) => center)
   );
@@ -74,7 +77,10 @@ export function getCentersFromIds(ids: string[], activitiesResponse: IActivities
   return selectedCenters;
 }
 
-export function getActivitiesFromIds(ids: string[], activitiesResponse: IActivitiesResponse) {
+export function getActivitiesFromIds(
+  ids: string[],
+  activitiesResponse: IActivitiesResponse
+) {
   const allActivities = activitiesResponse.classes.flatMap((category) =>
     category.options.map((activity) => activity)
   );
@@ -96,12 +102,18 @@ export function getActivitiesFromIds(ids: string[], activitiesResponse: IActivit
   return selectedActivities;
 }
 
-export function getTeamsFromIds(ids: string[], teamsResponse: ITeamsResponse[]) {
+export function getTeamsFromIds(
+  ids: string[],
+  teamsResponse: ITeamsResponse[]
+) {
   const allTeams = teamsResponse.flatMap((date) =>
-    date.items.map((team) => <ITeamWithDate>{
-      date: date.date,
-      team
-    })
+    date.items.map(
+      (team) =>
+        <ITeamWithDate>{
+          date: date.date,
+          team,
+        }
+    )
   );
 
   const selectedTeams = allTeams
@@ -114,23 +126,28 @@ export function getTeamsFromIds(ids: string[], teamsResponse: ITeamsResponse[]) 
   }
 
   dumpTitle('Target teams');
-  selectedTeams.map((team) =>
-    printTeam(team)
-  );
+  selectedTeams.map((team) => printTeam(team));
 
   return selectedTeams;
 }
 
-export function getTeamsFromKeyword(keywords: string[], teamsResponse: ITeamsResponse[], showResult?: boolean) {
+export function getTeamsFromKeyword(
+  keywords: string[],
+  teamsResponse: ITeamsResponse[],
+  showResult?: boolean
+) {
   const allTeams = teamsResponse.flatMap((date) =>
-    date.items.map((team) => <ITeamWithDate>{
-      date: date.date,
-      team
-    })
+    date.items.map(
+      (team) =>
+        <ITeamWithDate>{
+          date: date.date,
+          team,
+        }
+    )
   );
 
   const selectedTeams = allTeams
-    .filter((teams) => keywords.every(e => JSON.stringify(teams).includes(e)))
+    .filter((teams) => keywords.every((e) => JSON.stringify(teams).includes(e)))
     .map((teams) => teams);
 
   if (selectedTeams === undefined || selectedTeams.length === 0) {
@@ -139,24 +156,34 @@ export function getTeamsFromKeyword(keywords: string[], teamsResponse: ITeamsRes
   }
 
   if (showResult) {
-    dumpTitle(`Target teams for booking ${keywords ? `matching keywords '${keywords}'` : ''}`);
-    selectedTeams.map((team) =>
-      printTeam(team)
+    dumpTitle(
+      `Target teams for booking ${
+        keywords ? `matching keywords '${keywords}'` : ''
+      }`
     );
+    selectedTeams.map((team) => printTeam(team));
   }
 
   return selectedTeams;
 }
 
 export const printTeam = (team: ITeamWithDate) => {
-  console.log(`${team.team.bookingId} - ${team.team.location} - ${team.team.title} /w ${team.team.instructor} @ ${team.date} ${team.team.startTime}-${team.team.endTime}`);
-}
+  console.log(
+    `${team.team.bookingId} - ${team.team.location} - ${team.team.title} /w ${team.team.instructor} @ ${team.date} ${team.team.startTime}-${team.team.endTime}`
+  );
+};
 
-export const isWithinAllowedBookingDays = (team: ITeamWithDate, daysAllowed: number) => {
+export const isWithinAllowedBookingDays = (
+  team: ITeamWithDate,
+  daysAllowed: number
+) => {
   const daysAllowedInMin = daysAllowed * 1440;
-  const diffInMin = differenceInMinutes(new Date(`${team.date} ${team.team.startTime}`), new Date());
+  const diffInMin = differenceInMinutes(
+    new Date(`${team.date} ${team.team.startTime}`),
+    new Date()
+  );
   return diffInMin < daysAllowedInMin;
-}
+};
 
 export const parseIntOption = (input: string) => {
   const parsedValue = parseInt(input, 10);
@@ -164,4 +191,4 @@ export const parseIntOption = (input: string) => {
     throw new InvalidArgumentError('Not a number.');
   }
   return parsedValue;
-}
+};
