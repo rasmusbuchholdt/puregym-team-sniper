@@ -170,7 +170,8 @@ const handleBooking = async (
   const searchDaysAllowed = await bookingClient.getSearchDaysAllowed();
   const notBookedTeams = teams.filter((e) => e.team.participationId === null);
   dumpTitle(
-    `Found ${teams.length} teams - (${teams.length - notBookedTeams.length}/${teams.length
+    `Found ${teams.length} teams - (${teams.length - notBookedTeams.length}/${
+      teams.length
     }) already booked`
   );
   for (let i = 0; i < notBookedTeams.length; i++) {
