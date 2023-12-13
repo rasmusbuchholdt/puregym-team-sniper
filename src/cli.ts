@@ -11,6 +11,7 @@ import { dumpCenters } from './dumps/dump-centers';
 import { dumpTeams } from './dumps/dump-teams';
 import { dumpTitle, getActivitiesFromIds, getCentersFromIds, getTeamsFromIds, getTeamsFromKeyword, isWithinAllowedBookingDays, parseIntOption } from './helpers';
 import { ITeamWithDate } from './models/team-with-date';
+import { LoggingClient } from "./clients/logging-client";
 
 dotenv.config();
 
@@ -25,6 +26,8 @@ type ProgramOptions = {
   book?: boolean;
   unbook?: boolean;
 }
+
+const loggingClient = new LoggingClient();
 
 const program = new Command();
 program
@@ -120,6 +123,13 @@ const handleBooking = async (teams: ITeamWithDate[], bookingClient: PureGymBooki
       console.log(`${team.team.bookingId} is not within the ${searchDaysAllowed} booking ahead limit`);
       continue;
     }
+
+    const firstTimeBooked = await loggingClient.isFirstTimeBooked(team.team.bookingId);
+    if (!firstTimeBooked) {
+      console.log(`Skipping ${team.team.bookingId} - already booked in the past`);
+      continue;
+    }
+
     const result = await bookingClient.bookTeam(team.team);
     if (result.status === 'success') {
       console.log(`Succesfully booked ${team.team.bookingId}`);
